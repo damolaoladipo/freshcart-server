@@ -1,0 +1,56 @@
+[
+    {
+      "name": "superadmin",
+      "description": "Superadmin can access and manage everything in the system",
+      "permissions": [
+        "manage_users",
+        "view_reports",
+        "manage_roles",
+        "view_content",
+        "manage_products",
+        "manage_orders",
+        "system_settings",
+        "view_financials"
+      ]
+    },
+    {
+      "name": "admin",
+      "description": "Admin has extensive access but less than superadmin",
+      "permissions": [
+        "manage_users",
+        "view_reports",
+        "manage_roles",
+        "view_content",
+        "manage_products",
+        "manage_orders"
+      ]
+    },
+    {
+      "name": "vendor",
+      "description": "Vendors can manage their own products and view their sales reports",
+      "permissions": [
+        "view_content",
+        "manage_own_products",
+        "view_own_sales_reports",
+        "manage_own_orders"
+      ]
+    },
+    {
+      "name": "customer",
+      "description": "Customers can browse products, place orders, and manage their own accounts",
+      "permissions": [
+        "view_content",
+        "place_orders",
+        "view_order_history",
+        "manage_account"
+      ]
+    },
+    {
+      "name": "guest",
+      "description": "Guests can browse products but need to create an account to place orders",
+      "permissions": [
+        "view_content"
+      ]
+    }
+  ]
+  
