@@ -11,8 +11,8 @@ import expressSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import hpp from "hpp";
 import cors from "cors";
-import userAgent from "express-useragent";
-import v1Routes from "../routes/v1/routers/routes.router";
+// import userAgent from "express-useragent";
+// import v1Routes from "../routes/v1/routers/routes.router";
 
 
 
@@ -95,7 +95,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 
 })
 
-app.use('/v1', v1Routes)
+// app.use('/v1', v1Routes)
 
 app.use(errorHandler)
 
