@@ -19,5 +19,5 @@ build
 # Optional eslint cache
 .eslintcache
 
-# my files
-.txt
+# Ignore all .txt files
+*.txt
