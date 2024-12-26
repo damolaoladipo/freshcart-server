@@ -26,8 +26,8 @@
       ]
     },
     {
-      "name": "vendor",
-      "description": "Vendors can manage their own products and view their sales reports",
+      "name": "merchant",
+      "description": "merchants can manage their own products and view their sales reports",
       "permissions": [
         "view_content",
         "manage_own_products",
@@ -36,8 +36,8 @@
       ]
     },
     {
-      "name": "customer",
-      "description": "Customers can browse products, place orders, and manage their own accounts",
+      "name": "user",
+      "description": "users can browse products, place orders, and manage their own accounts",
       "permissions": [
         "view_content",
         "place_orders",
