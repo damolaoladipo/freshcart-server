@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
-import { ENVType } from "../utils/enums.util";
+import { ENVType } from "../utils/enum.util";
 import ENV from "../utils/env.util";
 import errorHandler from "../middleware/error.mdw";
 import cookieParser from "cookie-parser";
