@@ -3,7 +3,6 @@ import logger from "../../utils/logger.util";
 import Role from "../../models/Role.model";
 import { IRoleDoc } from "../../utils/interface.util";
 
-//read the json
 const rolesData = JSON.parse(
   fs.readFileSync(`${__dirname.split("config")[0]}_data/roles.json`, "utf-8")
 );
@@ -16,9 +15,7 @@ export const seedRoles = async () => {
 
       if (seed) {
         logger.log({
-          data: "roles seeded succesfully by Damola",
-          type: "info",
-        });
+          data: "roles data seeded succesfully", type: "info" });
       }
 
       for (let i = 0; i < rolesData.length; i++) {
@@ -27,11 +24,9 @@ export const seedRoles = async () => {
         let role = await Role.create(item);
       
         if (role) {
-          console.log(`role ${role.name} seeded succesfully by Damola`);
+          console.log(`role ${role.name} seeded succesfully`);
         }
-      }
-
-      
+      }   
     }
   } catch (err) {
     if (err instanceof Error) {
@@ -39,7 +34,6 @@ export const seedRoles = async () => {
       } else {
         logger.log({ label: "ERR for user role", data: String(err), type: "error" });
       }
-    // logger.log({ label: "ERR for role", data: err.message || err, type: "error" });
   }
 };
 

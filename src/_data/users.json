@@ -5,9 +5,15 @@
       "password": "p6vzH^51$B@;",
       "firstName": "Super",
       "lastName": "Administrator",
-      "phoneNumber": "09061590172",
       "phoneCode": "+234",
-      "role": "superadmin"
+      "phoneNumber": "09061590172",
+      "ountryPhone": "+2349061590172",
+      "role": "superadmin",
+      "accountStatus": "active",
+      "isSuper": true,
+      "isAdmin": true,
+      "isUser": true,
+      "isActive": true
     }
 ]
   

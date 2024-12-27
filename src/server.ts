@@ -1,17 +1,18 @@
 import app from "./config/app.config";
 import colors from "colors";
 import connectDB from "./config/db.config";
+import seedData from "./config/seeds/seeder.seed";
 
 const connect = async () : Promise<void> => {
 
     await connectDB()
+    await seedData()
 }
 
 connect()
 
 
-const PORT = process.env.PORT || 5000;
- 
+const PORT = process.env.PORT;
 
 const server = app.listen(PORT, () => {
     console.log(colors.bold.yellow (`Node Server running in ${process.env.NODE_ENV} mode`)) ;
