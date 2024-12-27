@@ -42,12 +42,12 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
         }
     }
 
-    res.status(error.statusCode || 500).json({
+    res.status(error.statusCode).json({
         error: true,
         errors: error.errors ? error.errors: [],
         data: {},
-        message: error.message ? error.message: 'Server Error',
-        status: error.statusCode ? error.statusCode : 500
+        message: error.message,
+        status: error.statusCode
     })
 }
 
