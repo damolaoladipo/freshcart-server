@@ -21,7 +21,9 @@ export enum UserType {
     
 export enum DbModels {
     USER = "User",
-    ROLE = "ROle",
+    ROLE = "Role",
+    MERCHANT = "Merchant",
+    GUEST = "Guest",
     PRODUCT = "Product",
     CATEGORY = "Category",
     CART = "Cart",

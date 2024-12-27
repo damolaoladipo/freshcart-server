@@ -18,3 +18,42 @@ export interface IRoleDoc extends Document {
   getAll(): Array<IRoleDoc>;
   findByName(name: string): IRoleDoc | null;
 }
+
+
+export interface IUserDoc extends Document {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    
+    username: string;
+    avatar: string;
+    phoneNumber: string;
+    phoneCode: string;
+    countryPhone: string;
+    userType: string;
+    resetPasswordToken: string;
+    accountStatus: string;
+    emailCode: string;
+    slug: string;
+    
+    isSuper: boolean;
+    isAdmin: boolean;	
+    isMerchant: boolean;	
+    IsGuest: boolean;
+    isUser: boolean;	
+    isActive: boolean;	
+    
+    merchant: ObjectId | any;
+    Guest: ObjectId | any;
+    role: ObjectId | any;
+    cart: Array<ObjectId | any>;	
+    wishlist: Array<ObjectId | any>;	
+    address: Array<{
+        street: string;
+        city: string;
+        state: string;
+        postalCode: string;
+        country: string;
+    }>;
+}
