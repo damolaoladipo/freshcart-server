@@ -11,6 +11,8 @@ import expressSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import hpp from "hpp";
 import cors from "cors";
+import { manageSession } from "../middlewares/session.mdw";
+import session from "express-session";
 // import userAgent from "express-useragent";
 // import v1Routes from "../routes/v1/routers/routes.router";
 
@@ -31,6 +33,16 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}))
 
 // cookie parser
 app.use(cookieParser())
+
+// manage sessions
+app.use(manageSession);
+
+app.use(session({
+    secret: process.env.SESSION_SECRET, 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+  }));
 
 // temporaary files directory
 app.use(fileUpload({useTempFiles: true, tempFileDir: path.join(__dirname, 'tmp')}))
