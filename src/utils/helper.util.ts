@@ -4,7 +4,7 @@
  * @param length - The length of the username to generate.
  * @returns A randomly generated username.
  */
-export const generateUsername = (length = 20) => {
+export const generateRandomChars = (length = 20) => {
     const numberChars = "0123456789";
     const letterChars = "abcdefghijklmnopqrstuvwxyz";
     const allChars = numberChars + letterChars;
@@ -13,8 +13,8 @@ export const generateUsername = (length = 20) => {
   
     const shuffledChars = shuffle(allChars);
   
-    const username = shuffledChars.slice(0, length);
+    const randomChars = shuffledChars.slice(0, length);
   
-    return username;
+    return randomChars;
   }
  
