@@ -42,7 +42,8 @@ export interface IUserDoc extends Document {
     isMerchant: boolean;	
     isGuest: boolean;
     isUser: boolean;	
-    isActive: boolean;	
+    isActive: boolean;
+    loginLimit: number;	
     
     merchant: ObjectId | any;
     guest: ObjectId | any;
@@ -50,6 +51,9 @@ export interface IUserDoc extends Document {
     cart: Array<ObjectId | any>;	
     wishlist: Array<ObjectId | any>;	
     address: Array<IAddress>;
+
+    matchPassword: (password: string) => boolean;
+    getAuthToken: () => string;
 }
 
 export interface IAddress {
@@ -58,5 +62,12 @@ export interface IAddress {
     state: string;
     postalCode: string;
     country: string;
+  }
+
+ export interface IResult {
+    error: boolean;
+    message: string;
+    code: number;
+    data: any;
   }
   

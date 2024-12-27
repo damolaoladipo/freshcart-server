@@ -4,7 +4,7 @@ import slugify from "slugify";
 import bcrypt, { genSalt, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { DbModels } from "../utils/enum.util";
-import Address from "./address.model";
+import Address from "./Address.model";
 
 const UserSchema = new Schema(
   {
@@ -30,6 +30,7 @@ const UserSchema = new Schema(
     IsGuest: { type: Boolean, default: false },
     isUser: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    loginLimit: { type: Number, default: 5 },
 
     merchant: { type: Schema.Types.ObjectId, ref: DbModels.MERCHANT },
     Guest: { type: Schema.Types.ObjectId, ref: DbModels.GUEST },
