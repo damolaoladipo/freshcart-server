@@ -1,8 +1,8 @@
 
 /**
- * Generates a random username
- * @param length - The length of the username to generate.
- * @returns A randomly generated username.
+ * Generates random characters
+ * @param length - The length of the characters to generate.
+ * @returns A randomly generated characters.
  */
 export const generateRandomChars = (length = 20) => {
     const numberChars = "0123456789";
