@@ -54,6 +54,7 @@ export const editUser = asyncHandler(
         username,
         firstName,
         lastName,
+        avatar,
         phoneNumber,
         phoneCode,
         countryPhone,
@@ -68,6 +69,7 @@ export const editUser = asyncHandler(
       user.username = username || user.username;
       user.firstName = firstName || user.firstName;
       user.lastName = lastName || user.lastName;
+      user.avatar = avatar || user.avatar;
       user.phoneNumber = phoneNumber || user.phoneNumber;
       user.phoneCode = phoneCode || user.phoneCode;
       user.countryPhone = countryPhone || user.countryPhone;
