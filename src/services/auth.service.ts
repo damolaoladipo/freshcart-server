@@ -1,5 +1,5 @@
 import { RegisterDTO } from "../dtos/auth.dto";
-import authMappers from "../mappers/auth.mappers";
+import authMappers from "../mappers/auth.mapper";
 import User from "../models/User.model";
 import { IResult, IUserDoc } from "../utils/interface.util";
 import userService from "./user.service";

@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import User from "../models/User.model";
-import authMappers from "../mappers/auth.mappers";
+import authMapper from "../mappers/auth.mapper";
 import AuthService from "../services/auth.service";
 import userService from "../services/user.service";
 import { RegisterDTO } from "../dtos/auth.dto";
 
 import { generateRandomChars } from "../utils/helper.util";
 import { UserType } from "../utils/enum.util";
+import SessionToken from "../models/sessionToken.model";
 
 /**
  * @name register
@@ -60,7 +61,7 @@ export const register = asyncHandler(
           isMerchant: false
       });
   
-      const mapped = await authMappers.mapRegisteredUser(user);
+      const mapped = await authMapper.mapRegisteredUser(user);
 
       res.status(200).json({
         error: false,
@@ -96,18 +97,18 @@ export const login = asyncHandler(
     }
 
     // Check if there is an existing refresh token for this user
-    const existingToken = await RefreshToken.findOne({
+    const existingToken = await SessionToken.findOne({
       userId: validate.data.id,
     });
 
     if (existingToken) {
-      // Replace the old refresh token with the new one
-      existingToken.token = validate.data.refreshToken;
+      // Replace the old Session token with the new one
+      existingToken.token = validate.data.SessionToken;
       await existingToken.save();
     } else {
-      // Create a new refresh token record if none exists
-      await RefreshToken.create({
-        token: validate.data.refreshToken,
+      // Create a new Session token record if none exists
+      await SessionToken.create({
+        token: validate.data.SessionToken,
         userId: validate.data.id,
       });
     }
@@ -119,11 +120,11 @@ export const login = asyncHandler(
     });
 
     // Set the refresh token in an httpOnly cookie
-    res.cookie("refreshToken", validate.data.refreshToken, {
+    res.cookie("sessionToken", validate.data.SessionToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      secure: process.env.NODE_ENV === "production", 
       sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds TODO: Transfer to env
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
     });
 
     const mappedData = await authMapper.mapRegisteredUser(validate.data);

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import User from "../models/User.model";
-import authMappers from "../mappers/auth.mappers";
+import authMappers from "../mappers/auth.mapper";
 
 /**
  * @name getUser
