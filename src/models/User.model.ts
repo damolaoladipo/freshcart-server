@@ -4,17 +4,7 @@ import slugify from "slugify";
 import bcrypt, { genSalt, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { DbModels } from "../utils/enum.util";
-
-const AddressSchema = new Schema(
-  {
-    street: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    postalCode: { type: String, required: true },
-    country: { type: String, required: true },
-  },
-  { _id: false }
-);
+import Address from "./address.model";
 
 const UserSchema = new Schema(
   {
@@ -46,7 +36,7 @@ const UserSchema = new Schema(
     role: { type: Schema.Types.ObjectId, ref: DbModels.ROLE },
     cart: [{ type: Schema.Types.ObjectId, ref: DbModels.CART }],
     wishlist: [{ type: Schema.Types.ObjectId, ref: DbModels.WISHLIST }],
-    address: [AddressSchema],
+    address: [Address.schema],
   },
   {
     timestamps: true,

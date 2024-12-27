@@ -49,11 +49,14 @@ export interface IUserDoc extends Document {
     role: ObjectId | any;
     cart: Array<ObjectId | any>;	
     wishlist: Array<ObjectId | any>;	
-    address: Array<{
-        street: string;
-        city: string;
-        state: string;
-        postalCode: string;
-        country: string;
-    }>;
+    address: Array<IAddress>;
 }
+
+export interface IAddress {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  }
+  

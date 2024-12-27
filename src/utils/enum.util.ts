@@ -24,6 +24,7 @@ export enum DbModels {
     ROLE = "Role",
     MERCHANT = "Merchant",
     GUEST = "Guest",
+    ADDRESS = "Address",
     PRODUCT = "Product",
     CATEGORY = "Category",
     CART = "Cart",
