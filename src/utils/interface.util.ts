@@ -40,12 +40,12 @@ export interface IUserDoc extends Document {
     isSuper: boolean;
     isAdmin: boolean;	
     isMerchant: boolean;	
-    IsGuest: boolean;
+    isGuest: boolean;
     isUser: boolean;	
     isActive: boolean;	
     
     merchant: ObjectId | any;
-    Guest: ObjectId | any;
+    guest: ObjectId | any;
     role: ObjectId | any;
     cart: Array<ObjectId | any>;	
     wishlist: Array<ObjectId | any>;	

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import User from "../models/User.model";
+import authMappers from "../mappers/auth.mappers";
 
 /**
  * @name getUser
@@ -58,13 +59,11 @@ export const editUser = asyncHandler(
         countryPhone,
       } = req.body; 
   
-      // Find the user by ID
       const user = await User.findById(userId);
       if (!user) {
         return next(new ErrorResponse("Error", 404, ["User  not found"]));
       }
   
-      // Update user information
       user.firstName = firstName || user.firstName;
       user.username = username || user.username;
       user.firstName = firstName || user.firstName;
@@ -75,7 +74,7 @@ export const editUser = asyncHandler(
   
       await user.save();
   
-      const mapped = await authMapper.mapRegisteredUser(user);
+      const mapped = await authMappers.mapRegisteredUser(user);
   
       res.status(201).json({
         error: false,
