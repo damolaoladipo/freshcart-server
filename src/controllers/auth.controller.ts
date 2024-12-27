@@ -72,3 +72,68 @@ export const register = asyncHandler(
       });
     }
   );
+
+
+  /**
+ * @name login
+ * @description logs a user in
+ * @route POST /auth/login
+ * @access  Public
+ */
+export const login = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+
+    if(req.body.email) {
+      req.body.email = req.body.email.toLowerCase();
+    }
+
+    const validate = await AuthService.validateLogin(req.body);
+
+    if (validate.error) {
+      return next(
+        new ErrorResponse("Error", validate.code!, [validate.message])
+      );
+    }
+
+    // Check if there is an existing refresh token for this user
+    const existingToken = await RefreshToken.findOne({
+      userId: validate.data.id,
+    });
+
+    if (existingToken) {
+      // Replace the old refresh token with the new one
+      existingToken.token = validate.data.refreshToken;
+      await existingToken.save();
+    } else {
+      // Create a new refresh token record if none exists
+      await RefreshToken.create({
+        token: validate.data.refreshToken,
+        userId: validate.data.id,
+      });
+    }
+
+    // Update the user's lastLogin timestamp
+    const lastLogin = new Date();
+    await User.findByIdAndUpdate(validate.data.id, {
+      lastLogin,
+    });
+
+    // Set the refresh token in an httpOnly cookie
+    res.cookie("refreshToken", validate.data.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds TODO: Transfer to env
+    });
+
+    const mappedData = await authMapper.mapRegisteredUser(validate.data);
+
+    res.status(200).json({
+      error: false,
+      errors: [],
+      data: { ...mappedData, lastLogin, authToken: validate.data.authToken },
+      message: "User login successful",
+      status: 200,
+    });
+  }
+);

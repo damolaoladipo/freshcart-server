@@ -44,6 +44,7 @@ export interface IUserDoc extends Document {
     isUser: boolean;	
     isActive: boolean;
     loginLimit: number;	
+    sessionToken: string;
     
     merchant: ObjectId | any;
     guest: ObjectId | any;
@@ -64,10 +65,16 @@ export interface IAddress {
     country: string;
   }
 
- export interface IResult {
+
+  export interface IResult {
     error: boolean;
     message: string;
     code: number;
     data: any;
   }
   
+export interface ISessionToken extends Document {
+    token: string;
+    userId: ObjectId;
+    createdAt: Date;
+  }
