@@ -40,7 +40,7 @@ export const register = asyncHandler(
         );
       }
 
-      let username = req.session.token;
+      let username = req.session.sessionToken;
 
       if (!username) {
         username = generateRandomChars(24);
