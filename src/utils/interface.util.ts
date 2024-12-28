@@ -77,8 +77,9 @@ export interface ISessionToken extends Document {
     token: string;
     userId: ObjectId;
     createdAt: Date;
+    removeSession: () => void;
   }
 
 export interface IRandoChar {
-  
+
 }

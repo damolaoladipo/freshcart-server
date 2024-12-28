@@ -198,7 +198,7 @@ export const generateSessionToken = (req: Request, res: Response, next: NextFunc
     }
   }
 
-  res.json({
+  res.status(200).json({
     error: false,
     errors: [],
     data: { sessionToken: sessionToken },
@@ -265,7 +265,7 @@ export const createSessionToken = asyncHandler(
       sameSite: 'strict',
   });
  
-  res.json({
+  res.status(200).json({
       error: false,
       errors: [],
       data: { sessionToken: token },
@@ -275,3 +275,44 @@ export const createSessionToken = asyncHandler(
 
 }
 )
+
+/**
+ * @name logout
+ * @description Logs out the user by invalidating the session token
+ * @route POST /auth/logout
+ * @access Public
+ */
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
+  
+  const { sessionToken } = req.cookies;
+
+  if (!sessionToken) {
+    return next(new ErrorResponse("Session token is missing", 400, ["Session token is required"]));
+  }
+
+  const session = await SessionToken.findOne({ token: sessionToken });
+  if (!session) {
+    return next(new ErrorResponse("Session token not found", 403, ["Session token not found or expired"]));
+  }
+
+  await session.removeSession();
+
+  res.clearCookie('sessionToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+
+  req.session.destroy((err) => {
+    if (err) {
+      return next(new ErrorResponse("Failed to destroy session", 500, ["Server error occurred while logging out"]));
+    }
+
+    return res.status(200).json({
+      error: false,
+      errors: [],
+      message: "User logged out successfully.",
+      status: 200,
+    });
+  });
+};
