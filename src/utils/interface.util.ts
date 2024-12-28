@@ -78,3 +78,7 @@ export interface ISessionToken extends Document {
     userId: ObjectId;
     createdAt: Date;
   }
+
+export interface IRandoChar {
+  
+}

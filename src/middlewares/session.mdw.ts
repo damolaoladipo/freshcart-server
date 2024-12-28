@@ -1,51 +1,49 @@
 import { Request, Response, NextFunction } from "express";
-import cookieParser from 'cookie-parser';
-import crypto from 'crypto';
-import session,  { SessionData } from 'express-session';
-import ErrorResponse from "../utils/error.util";
-import { generateRandomChars } from "../utils/helper.util";
+import { checkSessionTokenInDb, verifyToken } from "../utils/session.util";
 
 declare global {
-    namespace Express {
-      interface Request {
-        sessionToken?: string; 
-      }
-    }
-  }
-
-declare module "express-session" {
-    interface SessionData {
+  namespace Express {
+    interface Request {
       sessionToken?: string;
     }
   }
+}
+declare module "express-session" {
+  interface SessionData {
+    sessionToken?: string;
+  }
+}
 
-export const manageSession = (req: Request, res: Response, next: NextFunction) => {
-    let sessionToken;
+export const manageSession = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = req.cookies.sessionToken || req.session.sessionToken;
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized - No session token found" });
+  }
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized - No session token found" });
+  }
   
-      if (req.session) {
-      sessionToken = req.session.sessionToken;
-  
-      if (!sessionToken) {
-        sessionToken = generateRandomChars(32);
-        req.session.sessionToken = sessionToken;
-      }
-    } else {
-     
-      return next(
-        new ErrorResponse("Server Error", 500, ["Session not initialized"])
-      );
-    }
-  
-    if (!sessionToken) {
-      sessionToken = req.cookies.sessionToken;
-  
-      if (!sessionToken) {
-        sessionToken = req.cookies.sessionToken
-        res.cookie('sessionToken', sessionToken, { httpOnly: true, maxAge: 60000 });
-      }
-    }
-  
-    req.sessionToken = sessionToken;
-  
-    next(); 
-  };
+  const isTokenValid = await verifyToken(
+    token,
+    process.env.SESSION_SECRET as string
+  );
+
+  if (!isTokenValid) {
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired session token" });
+  }
+
+  await checkSessionTokenInDb(token);
+
+  next(); 
+};
