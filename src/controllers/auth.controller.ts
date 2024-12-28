@@ -29,8 +29,12 @@ export const register = asyncHandler(
 
       const { sessionToken } = req.cookies;
       if (!sessionToken) {
+        const sessionToken = generateRandomChars(32); 
+        res.cookie('sessionToken', sessionToken, { httpOnly: true, maxAge: 55 * 60 * 60 * 1000 });
         return next(new ErrorResponse("Session token is missing", 400, ["Session token is required"]));
       }
+
+      
 
       const validSession = await verifyToken(sessionToken,  process.env.SESSION_SECRET as string); 
       if (!validSession) {
@@ -43,7 +47,6 @@ export const register = asyncHandler(
       if (!existingSession) {
         return next(new ErrorResponse("Session token is invalid or has expired", 403, ["Invalid session token"]));
       }
-  
 
       const validate = await AuthService.validateRegister(req.body);
   
@@ -118,7 +121,6 @@ export const login = asyncHandler(
       );
     }
 
-    
     const existingToken = await SessionToken.findOne({
       userId: validate.data.id,
     });
@@ -194,7 +196,7 @@ export const generateSessionToken = (req: Request, res: Response, next: NextFunc
 
     if (!sessionToken) {
       sessionToken = generateRandomChars(32); 
-      res.cookie('sessionToken', sessionToken, { httpOnly: true, maxAge: 60000 });
+      res.cookie('sessionToken', sessionToken, { httpOnly: true, maxAge: 5 * 60 * 60 * 1000 });
     }
   }
 
