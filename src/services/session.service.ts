@@ -112,6 +112,11 @@ class SessionService {
       sameSite: 'strict',
     });
 
+    result.error = false;
+    result.message = "Session token created successfully";
+    result.code = 200;
+    result.data = { sessionToken: token };
+    
     return result;
   }
 
@@ -147,6 +152,9 @@ class SessionService {
       return result;
     }
 
+    result.error = false;
+    result.message = "Session token is valid";
+    result.data = payload;
     return result;
   }
 
@@ -190,6 +198,8 @@ class SessionService {
       return result;
     }
 
+    result.error = false;
+    result.message = "Session token exists in the database";
     result.data = existingToken;
     return result;
   }
