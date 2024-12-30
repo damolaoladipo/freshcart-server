@@ -1,5 +1,14 @@
 import { Router } from "express";
-import { changePassword, createSessionToken, generateSessionToken, login, logout, register } from "../../controllers/auth.controller";
+import { 
+    changePassword, 
+    createSessionToken, 
+    forgotPassword, 
+    generateSessionToken, 
+    login, 
+    logout, 
+    register, 
+    resetPassword } 
+    from "../../controllers/auth.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 
