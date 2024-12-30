@@ -32,7 +32,8 @@ export interface IUserDoc extends Document {
     phoneCode: string;
     countryPhone: string;
     userType: string;
-    resetPasswordToken: string;
+    resetPasswordToken: any;
+    resetPasswordTokenExpire: any
     accountStatus: string;
     emailCode: string;
     slug: string;
@@ -55,6 +56,7 @@ export interface IUserDoc extends Document {
 
     matchPassword: (password: string) => boolean;
     getAuthToken: () => string;
+    getResetToken: () => string
 }
 
 export interface IAddress {

@@ -160,7 +160,7 @@ class SessionService {
 
   private verifyHmac(payloadString: string, hmacHash: string, secret: string): boolean {
     const hmac = crypto.createHmac('sha256', secret);
-    hmac.update(payloadString);
+    hmac.update(payloadString as string);
     const recalculatedHmac = hmac.digest('hex');
     return recalculatedHmac === hmacHash;
   }
@@ -186,7 +186,7 @@ class SessionService {
     }
 
     const tokenHash = crypto.createHmac('sha256', process.env.SESSION_SECRET as string)
-      .update(token)
+      .update(token as string)
       .digest('hex');
 
     const existingToken = await SessionToken.findOne({ token: tokenHash });
