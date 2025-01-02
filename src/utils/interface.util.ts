@@ -193,6 +193,8 @@ export interface IPaymentPartnerDoc extends Document {
   settings: { [key: string]: any };
   slug: string
 
+  processPayment(paymentDetails: any): Promise<any>;
+  processRefund(amount: number, refundDetails: any): Promise<any>;
   createPaymentPartner: () => Promise<IPaymentPartnerDoc>;
   updatePaymentPartner: (data: Partial<IPaymentPartnerDoc>) => Promise<IPaymentPartnerDoc>;
 

@@ -5,13 +5,14 @@ import { DbModels } from "../utils/enum.util";
 
 const PaymentPartnerSchema = new mongoose.Schema<IPaymentPartnerDoc>(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true, },
     apiKey: { type: String, required: true },
     apiSecret: { type: String, required: true },
     webhookUrl: { type: String, required: true },
-    supportedCurrencies: { type: [String], required: true },
+    supportedCurrencies: { type: [String], required: true, validate: (value: string[]) => value.length > 0 },
     settings: { type: Schema.Types.Mixed, default: {} },
     slug: { type: String, default: "" },
+    
   },
   {
     timestamps: true,
