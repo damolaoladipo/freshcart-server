@@ -222,6 +222,36 @@ export interface IWishlistDoc extends Document {
 
 
 
+export interface IShipmentDoc extends Document {
+  user: ObjectId;
+  order: ObjectId;
+  address: IAddress
+  trackingNumber: string;
+  status: string;
+  shipmentDate: Date;
+  updateShipmentStatus: (status: string) => Promise<IShipmentDoc>;
+  updateTrackingNumber: (trackingNumber: string) => Promise<IShipmentDoc>;
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+
+export interface IDoc extends Document {
+ 
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+
+
 export interface IDoc extends Document {
  
 
