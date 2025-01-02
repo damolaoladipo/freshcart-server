@@ -119,13 +119,48 @@ export interface IProductDoc extends Document {
 }
 
 
-export interface IcartDoc extends Document {
-  user: ObjectId;
+export interface ICartDoc extends Document {
+  users: ObjectId;
   products: { productId: ObjectId; quantity: number }[];
   coupon: string | null;
   checkout: boolean;
-  addToCart: (productId: ObjectId, quantity: number) => Promise<IcartDoc>;
-  removeFromCart: (productId: ObjectId) => Promise<IcartDoc>;
-  applyCoupon: (coupon: string) => Promise<IcartDoc>;
-  proceedToCheckout: () => Promise<IcartDoc>;
+
+  addToCart: (productId: ObjectId, quantity: number) => Promise<ICartDoc>;
+  removeFromCart: (productId: ObjectId) => Promise<ICartDoc>;
+  applyCoupon: (coupon: string) => Promise<ICartDoc>;
+  proceedToCheckout: () => Promise<ICartDoc>;
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+export interface IOrderDoc extends Document {
+  users: ObjectId;
+  address: IAddress
+  orderDate: Date;
+  status: string;
+  totalAmount: number;
+  orderItems: { productId: ObjectId; quantity: number }[];
+  payment: {
+    method: string;
+    status: string;
+    transactionId: string;
+  };
+  shipment: {
+    carrier: string;
+    trackingNumber: string;
+    status: string;
+  };
+
+  placeOrder: () => Promise<IOrderDoc>;
+  updateStatus: (status: string) => Promise<IOrderDoc>;
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
 }
