@@ -6,7 +6,7 @@ import {
   removeFromCart,
   applyCoupon,
   checkout 
-} from "../../controllers/Cart.Controller";
+} from "../../controllers/cart.Controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const cartRouter = Router();

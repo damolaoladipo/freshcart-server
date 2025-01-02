@@ -4,7 +4,7 @@ import {
   getOrder, 
   updateOrderStatus, 
   getUserOrders 
-} from "../../controllers/Order.controller";
+} from "../../controllers/order.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const orderRouter = Router();

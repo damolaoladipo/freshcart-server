@@ -7,7 +7,7 @@ import AuthService from "../services/auth.service";
 import userService from "../services/user.service";
 import { RegisterDTO } from "../dtos/auth.dto";
 import { UserType } from "../utils/enum.util";
-import SessionToken from "../models/sessionToken.model";
+import SessionToken from "../models/SessionToken.model";
 import SessionService from "../services/session.service"; // Import SessionService
 import { generateRandomChars } from "../utils/helper.util";
 import { checkSessionTokenInDb } from "../utils/session.util";

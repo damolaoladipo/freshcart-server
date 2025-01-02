@@ -184,8 +184,17 @@ export interface ITransactionDoc extends Document {
 
 
 
-export interface IDoc extends Document {
- 
+export interface IPaymentPartnerDoc extends Document {
+  name: string;
+  apiKey: string;
+  apiSecret: string;
+  webhookUrl: string;
+  supportedCurrencies: string[];
+  settings: { [key: string]: any };
+  slug: string
+  
+  createPaymentPartner: () => Promise<IPaymentPartnerDoc>;
+  updatePaymentPartner: (data: Partial<IPaymentPartnerDoc>) => Promise<IPaymentPartnerDoc>;
 
   createdAt: string;
   updatedAt: string;
