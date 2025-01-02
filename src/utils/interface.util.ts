@@ -192,7 +192,7 @@ export interface IPaymentPartnerDoc extends Document {
   supportedCurrencies: string[];
   settings: { [key: string]: any };
   slug: string
-  
+
   createPaymentPartner: () => Promise<IPaymentPartnerDoc>;
   updatePaymentPartner: (data: Partial<IPaymentPartnerDoc>) => Promise<IPaymentPartnerDoc>;
 
@@ -205,8 +205,13 @@ export interface IPaymentPartnerDoc extends Document {
 
 
 
-export interface IDoc extends Document {
- 
+export interface IWishlistDoc extends Document {
+  users: ObjectId;
+  products: Array<{ productId: ObjectId, quantity: number }>;
+
+  addProduct: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
+  removeProduct: (productId: ObjectId) => Promise<IWishlistDoc>;
+  updateProductQuantity: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
 
   createdAt: string;
   updatedAt: string;
