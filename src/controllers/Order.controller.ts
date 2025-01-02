@@ -84,6 +84,51 @@ export const updateOrderStatus = asyncHandler(
 );
 
 /**
+ * @name cancelOrder
+ * @description Cancels an order before it is shipped
+ * @route DELETE /order/:id
+ * @access  Private
+ */
+export const cancelOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orderId = req.params.id;
+
+    // Find the order
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return next(new ErrorResponse("Order not found", 404, []));
+    }
+
+    // Check if order is already shipped or completed
+    if (order.status === "shipped" || order.status === "completed") {
+      return next(new ErrorResponse("Cannot cancel an order that is already shipped or completed", 400, []));
+    }
+
+    // Update the order status to 'cancelled'
+    order.status = "cancelled";
+    
+    // Adjust stock (if necessary, based on your model logic)
+    order.orderItems.forEach(item => {
+      const product = Product.findById(item.productId);
+      if (product) {
+        product.stockQuantity += item.quantity;
+        product.save();
+      }
+    });
+
+    await order.save();
+
+    res.status(200).json({
+      error: false,
+      message: "Order cancelled successfully.",
+      data: order,
+    });
+  }
+);
+
+
+/**
  * @name getUserOrders
  * @description Retrieves all orders placed by a user
  * @route GET /order/user/:userId
@@ -99,6 +144,43 @@ export const getUserOrders = asyncHandler(
       error: false,
       message: "Orders retrieved successfully.",
       data: orders,
+    });
+  }
+);
+
+/**
+ * @name trackOrder
+ * @description Provides tracking information for a specific order
+ * @route GET /order/track/:id
+ * @access  Private
+ */
+export const trackOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const orderId = req.params.id;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return next(new ErrorResponse("Order not found", 404, []));
+    }
+
+    // Assuming tracking information is part of the shipment field.
+    const trackingInfo = order.shipment?.trackingNumber
+      ? {
+          trackingNumber: order.shipment.trackingNumber,
+          status: order.shipment.status,
+          shipmentDate: order.shipment.shipmentDate,
+        }
+      : null;
+
+    if (!trackingInfo) {
+      return next(new ErrorResponse("No tracking information available", 404, []));
+    }
+
+    res.status(200).json({
+      error: false,
+      message: "Order tracking information retrieved successfully.",
+      data: trackingInfo,
     });
   }
 );
