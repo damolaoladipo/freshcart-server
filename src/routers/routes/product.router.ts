@@ -10,7 +10,7 @@ import {
   removeDiscount,
   addTag,
   removeTag,
-} from "../../controllers/Product.controller";
+} from "../../controllers/product.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const productRouter = Router();

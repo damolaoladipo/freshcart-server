@@ -164,3 +164,56 @@ export interface IOrderDoc extends Document {
   _id: ObjectId;
   id: ObjectId;
 }
+
+export interface ITransactionDoc extends Document {
+  order: ObjectId;
+  amount: number;
+  method: string;
+  currency: string;
+  paymentPartner: string;
+  date: Date;
+  processTransaction: () => Promise<ITransactionDoc>;
+  updatePaymentStatus: (status: string) => Promise<ITransactionDoc>;
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+
+
+export interface IDoc extends Document {
+ 
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+
+
+export interface IDoc extends Document {
+ 
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
+
+
+
+export interface IDoc extends Document {
+ 
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+}
