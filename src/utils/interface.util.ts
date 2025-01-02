@@ -85,3 +85,40 @@ export interface ISessionToken extends Document {
 export interface IRandoChar {
 
 }
+
+export interface IProductDoc extends Document {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  tag: string[];
+  stockQuantity: number;
+  imageURLs: string[];
+  
+  merchant: ObjectId | any;
+  inStock: boolean;
+  discount: number;
+  count: number;
+  slug: string
+
+  createdAt: string;
+  updatedAt: string;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+  
+  getAllProducts: () => void
+  addToCart: (userId: ObjectId) => void;
+  like: (userId: ObjectId) => void;
+  updateStock: (quantity: number) => Promise<void>;
+  applyDiscount: (discountPercentage: number) => Promise<void>;
+  removeDiscount: () => Promise<void>;
+  addTag: (tag: string) => Promise<void>;
+  removeTag: (tag: string) => Promise<void>;
+  isInStock: () => boolean;
+}
+
+
+export interface IcartDoc extends Document {
+
+}
