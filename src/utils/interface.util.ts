@@ -240,8 +240,12 @@ export interface IShipmentDoc extends Document {
 }
 
 
-export interface IDoc extends Document {
- 
+export interface INotificationDoc extends Document {
+  user: ObjectId;
+  message: string;
+  status: string;
+  readNotification: () => Promise<INotificationDoc>;
+  removeNotification: () => Promise<INotificationDoc>;
 
   createdAt: string;
   updatedAt: string;
