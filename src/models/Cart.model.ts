@@ -5,11 +5,16 @@ import { DbModels, UserType } from "../utils/enum.util";
 
 const CartSchema = new mongoose.Schema<ICartDoc>(
   {
-    name: { type: String, default: UserType.USER, enum: UserType, required: true },
-    description: { type: String, maxLength: 200, default: "" },
-    slug: { type: String, default: "" },
     users: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
-    permissions: [{ type: String }],
+    products: [
+        {
+          productId: { type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true },
+          quantity: { type: Number, required: true },
+        },
+      ],
+    coupon: { type: String, default: null },
+    checkout: { type: Boolean, default: false },
+
   },
   {
     timestamps: true,
@@ -31,16 +36,40 @@ CartSchema.pre<ICartDoc>("insertMany", async function (next) {
   this.slug = slugify(this.name, { lower: true, replacement: "-" });
   next();
 });
+
 CartSchema.methods.getAll = async function () {
   return Cart.find({});
 };
-CartSchema.statics.findByName = async function (name: string) {
-  const Cart = Cart.findOne({ name });
-  return Cart ?? null;
-};
+
+CartSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, quantity: number) {
+    const productIndex = this.products.findIndex((p) => p.productId.toString() === productId.toString());
+  
+    if (productIndex !== -1) {
+      this.products[productIndex].quantity += quantity; // Update quantity if product already in cart
+    } else {
+      this.products.push({ productId, quantity });
+    }
+  
+    return this.save();
+  };
+
+CartSchema.methods.removeFromCart = function (productId: mongoose.Types.ObjectId) {
+    this.products = this.products.filter((p) => p.productId.toString() !== productId.toString());
+    return this.save();
+  };
+  
+CartSchema.methods.applyCoupon = function (coupon: string) {
+    this.coupon = coupon;
+    return this.save();
+  };
+  
+CartSchema.methods.proceedToCheckout = function () {
+    this.checkout = true;
+    return this.save();
+  };
 
 const Cart: Model<ICartDoc> = mongoose.model<ICartDoc>(
-  DbModels.Cart,
+  DbModels.CART,
   CartSchema
 );
 

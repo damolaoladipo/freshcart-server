@@ -120,5 +120,12 @@ export interface IProductDoc extends Document {
 
 
 export interface IcartDoc extends Document {
-
+  user: ObjectId;
+  products: { productId: ObjectId; quantity: number }[];
+  coupon: string | null;
+  checkout: boolean;
+  addToCart: (productId: ObjectId, quantity: number) => Promise<IcartDoc>;
+  removeFromCart: (productId: ObjectId) => Promise<IcartDoc>;
+  applyCoupon: (coupon: string) => Promise<IcartDoc>;
+  proceedToCheckout: () => Promise<IcartDoc>;
 }
