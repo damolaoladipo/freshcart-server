@@ -1,7 +1,6 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
-import { ICartDoc } from "../utils/interface.util";
-import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
+import mongoose, { Schema, Model } from "mongoose";
+import { ICartDoc, IProductDoc } from "../utils/interface.util";
+import { DbModels } from "../utils/enum.util";
 
 const CartSchema = new mongoose.Schema<ICartDoc>(
   {
@@ -27,25 +26,15 @@ const CartSchema = new mongoose.Schema<ICartDoc>(
   }
 );
 
-CartSchema.set("toJSON", { virtuals: true, getters: true });
-CartSchema.pre<ICartDoc>("save", async function (next) {
-  this.slug = slugify(this.name, { lower: true, replacement: "-" });
-  next();
-});
-CartSchema.pre<ICartDoc>("insertMany", async function (next) {
-  this.slug = slugify(this.name, { lower: true, replacement: "-" });
-  next();
-});
-
 CartSchema.methods.getAll = async function () {
   return Cart.find({});
 };
 
 CartSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, quantity: number) {
-    const productIndex = this.products.findIndex((p) => p.productId.toString() === productId.toString());
+    const productIndex = this.products.findIndex((p: IProductDoc) => p.id.toString() === productId.toString());
   
     if (productIndex !== -1) {
-      this.products[productIndex].quantity += quantity; // Update quantity if product already in cart
+      this.products[productIndex].quantity += quantity;
     } else {
       this.products.push({ productId, quantity });
     }
@@ -54,7 +43,7 @@ CartSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, qua
   };
 
 CartSchema.methods.removeFromCart = function (productId: mongoose.Types.ObjectId) {
-    this.products = this.products.filter((p) => p.productId.toString() !== productId.toString());
+    this.products = this.products.filter((p: IProductDoc) => p.id.toString() !== productId.toString());
     return this.save();
   };
   

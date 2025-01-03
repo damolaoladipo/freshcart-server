@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IPaymentPartnerDoc } from "../utils/interface.util";
 import slugify from "slugify";
 import { DbModels } from "../utils/enum.util";

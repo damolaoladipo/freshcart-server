@@ -1,7 +1,6 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IShipmentDoc } from "../utils/interface.util";
-import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
+import { DbModels} from "../utils/enum.util";
 import AddressSchema from "./Address.model";
 
 const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(

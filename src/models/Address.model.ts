@@ -10,7 +10,16 @@ const AddressSchema = new Schema<IAddress>(
     postalCode: { type: String, required: true },
     country: { type: String, required: true },
   },
-  { _id: false } 
+  {
+    // _id: true,
+    timestamps: true,
+    versionKey: "_version",
+    toJSON: {
+      transform(doc: any, ret) {
+        ret.id = ret._id;
+      },
+    },
+  }
 );
 
 const Address = mongoose.model(DbModels.ADDRESS, AddressSchema);

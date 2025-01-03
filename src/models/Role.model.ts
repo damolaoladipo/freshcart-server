@@ -1,4 +1,4 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IRoleDoc } from "../utils/interface.util";
 import slugify from "slugify";
 import { DbModels, UserType } from "../utils/enum.util";

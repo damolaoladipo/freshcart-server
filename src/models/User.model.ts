@@ -1,7 +1,7 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IUserDoc } from "../utils/interface.util";
 import slugify from "slugify";
-import bcrypt, { genSalt, compare } from "bcrypt";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { DbModels } from "../utils/enum.util";
 import Address from "./Address.model";

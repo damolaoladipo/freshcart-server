@@ -1,7 +1,6 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { ITransactionDoc } from "../utils/interface.util";
-import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
+import { DbModels } from "../utils/enum.util";
 
 const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
   {
@@ -10,6 +9,7 @@ const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
     method: { type: String, required: true },
     currency: { type: String, required: true },
     paymentPartner: { type: String, required: true },
+    status: { type: String, required: true },
     date: { type: Date, default: Date.now },
   },
   {

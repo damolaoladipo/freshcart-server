@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import crypto from 'crypto';
 import Order from '../models/Order.model';
 import User from '../models/User.model';
-import PaymentGateway from '../models/PaymentGateway.model';
+import PaymentGateway from '../models/PaymentPartner.model';
 import Address from '../models/Address.model';
 import Transaction from '../models/Transaction.model';
 import { IResult } from '../utils/interface.util';
@@ -17,11 +16,11 @@ class CheckoutService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async addAddress(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async addAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { userId, addressDetails } = req.body;
 
-    try {
+
       const user = await User.findById(userId);
 
       if (!user) {
@@ -32,16 +31,13 @@ class CheckoutService {
       }
 
       const newAddress = new Address(addressDetails);
-      user.addresses.push(newAddress);
+      user.address.push(newAddress);
       await user.save();
 
       result.error = false;
       result.message = "Address added successfully";
       result.data = newAddress;
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -51,11 +47,10 @@ class CheckoutService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async updateAddress(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async updateAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { userId, addressId, updatedAddressDetails } = req.body;
 
-    try {
       const user = await User.findById(userId);
 
       if (!user) {
@@ -65,7 +60,7 @@ class CheckoutService {
         return result;
       }
 
-      const address = user.addresses.id(addressId);
+      const address = user.address.id(addressId);
 
       if (!address) {
         result.error = true;
@@ -81,9 +76,6 @@ class CheckoutService {
       result.message = "Address updated successfully";
       result.data = address;
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -97,7 +89,7 @@ class CheckoutService {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { userId, addressId } = req.body;
 
-    try {
+    
       const user = await User.findById(userId);
 
       if (!user) {
@@ -116,16 +108,13 @@ class CheckoutService {
         return result;
       }
 
-      user.selectedAddress = addressId;
+      user.address = addressId;
       await user.save();
 
       result.error = false;
       result.message = "Shipping address selected successfully";
       result.data = address;
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -139,7 +128,6 @@ class CheckoutService {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { orderId, paymentDetails } = req.body;
 
-    try {
       const order = await Order.findById(orderId);
 
       if (!order) {
@@ -179,7 +167,7 @@ class CheckoutService {
 
       await transaction.save();
 
-      order.payment = transaction._id;
+      order.payment.transactionId = transaction._id;
       order.status = 'Paid';
       await order.save();
 
@@ -187,9 +175,6 @@ class CheckoutService {
       result.message = "Payment processed successfully";
       result.data = { transaction, order };
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -203,7 +188,6 @@ class CheckoutService {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { orderId } = req.params;
 
-    try {
       const order = await Order.findById(orderId).populate('orderItems.product');
 
       if (!order) {
@@ -217,9 +201,6 @@ class CheckoutService {
       result.message = "Order summary fetched successfully";
       result.data = order;
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -233,7 +214,6 @@ class CheckoutService {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { orderId } = req.body;
 
-    try {
       const order = await Order.findById(orderId);
 
       if (!order) {
@@ -250,9 +230,7 @@ class CheckoutService {
       result.message = "Order confirmed successfully";
       result.data = order;
       return result;
-    } catch (error) {
-      next(error);
-    }
+   
   }
 }
 

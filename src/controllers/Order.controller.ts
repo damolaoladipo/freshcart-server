@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import Order from "../models/Order.model";
+import Product from "../models/Product.model";
 
 /**
  * @name createOrder
@@ -93,24 +94,22 @@ export const cancelOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const orderId = req.params.id;
 
-    // Find the order
     const order = await Order.findById(orderId);
 
     if (!order) {
       return next(new ErrorResponse("Order not found", 404, []));
     }
 
-    // Check if order is already shipped or completed
     if (order.status === "shipped" || order.status === "completed") {
       return next(new ErrorResponse("Cannot cancel an order that is already shipped or completed", 400, []));
     }
 
-    // Update the order status to 'cancelled'
+    
     order.status = "cancelled";
     
-    // Adjust stock (if necessary, based on your model logic)
-    order.orderItems.forEach(item => {
-      const product = Product.findById(item.productId);
+    
+    order.orderItems.forEach( async (item) => {
+      const product = await Product.findById(item.productId);
       if (product) {
         product.stockQuantity += item.quantity;
         product.save();
@@ -164,7 +163,7 @@ export const trackOrder = asyncHandler(
       return next(new ErrorResponse("Order not found", 404, []));
     }
 
-    // Assuming tracking information is part of the shipment field.
+    
     const trackingInfo = order.shipment?.trackingNumber
       ? {
           trackingNumber: order.shipment.trackingNumber,

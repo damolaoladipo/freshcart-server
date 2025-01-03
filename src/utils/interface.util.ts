@@ -65,6 +65,12 @@ export interface IAddress {
     state: string;
     postalCode: string;
     country: string;
+
+    createdAt: string;
+    updatedAt: string;
+    _version: number;
+    _id: ObjectId;
+    id: ObjectId;
   }
 
 
@@ -147,12 +153,13 @@ export interface IOrderDoc extends Document {
   payment: {
     method: string;
     status: string;
-    transactionId: string;
+    transactionId: ObjectId;
   };
   shipment: {
     carrier: string;
     trackingNumber: string;
     status: string;
+    shipmentDate: Date;
   };
 
   placeOrder: () => Promise<IOrderDoc>;
@@ -171,7 +178,9 @@ export interface ITransactionDoc extends Document {
   method: string;
   currency: string;
   paymentPartner: string;
+  status: string
   date: Date;
+  
   processTransaction: () => Promise<ITransactionDoc>;
   updatePaymentStatus: (status: string) => Promise<ITransactionDoc>;
 
@@ -212,8 +221,8 @@ export interface IWishlistDoc extends Document {
   products: Array<{ productId: ObjectId, quantity: number }>;
 
   addProduct: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
-  removeProduct: (productId: ObjectId) => Promise<IWishlistDoc>;
-  updateProductQuantity: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
+  removeProduct: (productId: string) => Promise<IWishlistDoc>;
+  updateProductQuantity: (productId: string, quantity: number) => Promise<IWishlistDoc>;
 
   createdAt: string;
   updatedAt: string;

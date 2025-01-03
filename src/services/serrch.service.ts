@@ -12,16 +12,15 @@ class SearchService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async searchProducts(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async searchProducts(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { keyword, category, minPrice, maxPrice, sortBy, sortOrder } = req.query;
 
-    try {
       let searchQuery: any = {};
 
-      // Build the search query based on filters
+      
       if (keyword) {
-        searchQuery.$text = { $search: keyword };  // MongoDB full-text search (assuming we have a text index on name and description)
+        searchQuery.$text = { $search: keyword };  
       }
 
       if (category) {
@@ -38,7 +37,6 @@ class SearchService {
         }
       }
 
-      // Apply sorting if required
       let sortQuery: any = {};
       if (sortBy) {
         const validSortFields = ['price', 'rating', 'popularity'];
@@ -59,10 +57,9 @@ class SearchService {
       result.error = false;
       result.message = "Products retrieved successfully";
       result.data = products;
+      
       return result;
-    } catch (error) {
-      next(error);
-    }
+    
   }
 
   /**
@@ -72,14 +69,12 @@ class SearchService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async filterAndSortProducts(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async filterAndSortProducts(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { category, minPrice, maxPrice, sortBy, sortOrder } = req.query;
 
-    try {
       let filterQuery: any = {};
 
-      // Build the filter query based on filters
       if (category) {
         filterQuery.category = category;
       }
@@ -94,7 +89,7 @@ class SearchService {
         }
       }
 
-      // Apply sorting if required
+  
       let sortQuery: any = {};
       if (sortBy) {
         const validSortFields = ['price', 'rating', 'popularity'];
@@ -115,10 +110,9 @@ class SearchService {
       result.error = false;
       result.message = "Filtered and sorted products retrieved successfully";
       result.data = filteredAndSortedProducts;
+     
       return result;
-    } catch (error) {
-      next(error);
-    }
+    
   }
 }
 

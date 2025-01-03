@@ -1,7 +1,6 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
-import { IPaymentPartnerDoc, IProductDoc, IWishlistDoc } from "../utils/interface.util";
-import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
+import mongoose, { Schema, Model } from "mongoose";
+import { IProductDoc, IWishlistDoc } from "../utils/interface.util";
+import { DbModels } from "../utils/enum.util";
 
 const WishListSchema = new mongoose.Schema<IWishlistDoc>(
   {  

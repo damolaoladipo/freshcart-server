@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import crypto from 'crypto';
 import Order from '../models/Order.model';
 import Transaction from '../models/Transaction.model';
-import PaymentGateway from '../models/PaymentGateway.model';
+import PaymentGateway from '../models/PaymentPartner.model';
 import { IResult } from '../utils/interface.util';
 
 class PaymentService {
@@ -15,11 +14,10 @@ class PaymentService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async processPayment(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async processPayment(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { orderId, paymentDetails } = req.body;
 
-    try {
       const order = await Order.findById(orderId);
 
       if (!order) {
@@ -38,7 +36,6 @@ class PaymentService {
         return result;
       }
 
-      // Assuming we have a method to integrate with payment gateway's API
       const paymentResult = await paymentPartner.processPayment(paymentDetails);
 
       if (!paymentResult.success) {
@@ -60,7 +57,7 @@ class PaymentService {
 
       await transaction.save();
 
-      order.payment = transaction._id;
+      order.payment.transactionId = transaction._id;
       order.status = 'Paid';
       await order.save();
 
@@ -68,9 +65,6 @@ class PaymentService {
       result.message = "Payment processed successfully";
       result.data = { transaction, order };
       return result;
-    } catch (error) {
-      next(error);
-    }
   }
 
   /**
@@ -80,11 +74,10 @@ class PaymentService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async refundPayment(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async refundPayment(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { transactionId, refundDetails } = req.body;
 
-    try {
       const transaction = await Transaction.findById(transactionId);
 
       if (!transaction) {
@@ -127,9 +120,7 @@ class PaymentService {
       result.message = "Refund processed successfully";
       result.data = transaction;
       return result;
-    } catch (error) {
-      next(error);
-    }
+  
   }
 
   /**
@@ -139,7 +130,7 @@ class PaymentService {
    * @param next - The next middleware function
    * @returns { Promise<IResult> } - see IResult
    */
-  public async getTransactionHistory(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  public async getTransactionHistory(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { userId } = req.params;
 

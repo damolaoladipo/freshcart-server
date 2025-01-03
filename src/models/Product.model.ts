@@ -1,8 +1,7 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IProductDoc } from "../utils/interface.util";
 import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
-import Cart from "./Cart.model";
+import { DbModels } from "../utils/enum.util";
 
 const ProductSchema = new mongoose.Schema<IProductDoc>(
   {
@@ -20,9 +19,6 @@ const ProductSchema = new mongoose.Schema<IProductDoc>(
     discount: { type: Number, default: 0 },
     count: { type: Number, default: 0 },
     slug: { type: String, default: "" },
-  
-    
-    
   },
   {
     timestamps: true,
@@ -58,26 +54,17 @@ ProductSchema.statics.findByName = async function (name: string) {
   return role ?? null;
 };
 
-ProductSchema.methods.addToCart = async function (userId: mongoose.Types.ObjectId) {
-  const cart = await Cart.findOne({ user: userId });
-  const productIndex = cart?.products.findIndex(
-    (product: IProductDoc) => product.product.toString() === this._id.toString()
-  );
-
-  if (cart) {
-    if (productIndex > -1) {
-      cart.products[productIndex].quantity += 1;
+ProductSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, quantity: number) {
+    const productIndex = this.products.findIndex((p: IProductDoc) => p.id.toString() === productId.toString());
+  
+    if (productIndex !== -1) {
+      this.products[productIndex].quantity += quantity;
     } else {
-      cart.products.push({ product: this._id, quantity: 1 });
+      this.products.push({ productId, quantity });
     }
-  } else {
-    const newCart = new Cart({
-      user: userId,
-      products: [{ product: this._id, quantity: 1 }]
-    });
-    await newCart.save();
-  }
-};
+  
+    return this.save();
+  };
 
 ProductSchema.methods.updateStock = async function (quantity: number) {
   this.stockQuantity = Math.max(0, this.stockQuantity - quantity);
@@ -105,7 +92,7 @@ ProductSchema.methods.addTag = async function (tag: string) {
 };
 
 ProductSchema.methods.removeTag = async function (tag: string) {
-  this.tag = this.tag.filter(t => t !== tag);
+  this.tag = this.tag.filter((t: string) => t !== tag);
   await this.save();
 };
 

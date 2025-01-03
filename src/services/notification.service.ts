@@ -1,5 +1,4 @@
 import mailgun from 'mailgun-js';
-import { Request, Response, NextFunction } from "express";
 import { IResult } from '../utils/interface.util';
 
 class NotificationService {
@@ -72,9 +71,10 @@ class NotificationService {
           <p>Tracking Number: ${trackingNumber}</p>
           <p>Carrier: ${carrier}</p>
           <p>Estimated Delivery: ${estimatedDelivery}</p>
-          <p>You can track your shipment <a href="https://track.${carrier}.com/${trackingNumber}">here</a>.</p>
+          <p>You can track your shipment your dasboard.</p>
         `,
       };
+
 
       await this.mg.messages().send(emailData);
       result.message = "Shipping notification email sent successfully";

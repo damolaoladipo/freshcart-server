@@ -1,7 +1,6 @@
-import mongoose, { Schema, Types, Model } from "mongoose";
+import mongoose, { Schema, Model } from "mongoose";
 import { IOrderDoc } from "../utils/interface.util";
-import slugify from "slugify";
-import { DbModels, UserType } from "../utils/enum.util";
+import { DbModels } from "../utils/enum.util";
 
 const OrderSchema = new mongoose.Schema<IOrderDoc>(
   {
@@ -25,12 +24,13 @@ const OrderSchema = new mongoose.Schema<IOrderDoc>(
     payment: {
       method: { type: String, required: true },
       status: { type: String, required: true },
-      transactionId: { type: String, required: true },
+      transactionId: { type: String, ref: DbModels.TRANSACTION, required: true },
     },
     shipment: {
       carrier: { type: String, required: true },
       trackingNumber: { type: String, required: true },
       status: { type: String, required: true },
+      shipmentDate: { type: String, required: true },
     },
   },
   {
