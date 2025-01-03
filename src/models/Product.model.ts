@@ -45,7 +45,7 @@ ProductSchema.pre<IProductDoc>("insertMany", async function (next) {
   next();
 });
 
-ProductSchema.methods.getAllProducts = async function () {
+ProductSchema.methods.getAllProducts = async function (): Promise<IProductDoc[]> {
   return Product.find({});
 };
 

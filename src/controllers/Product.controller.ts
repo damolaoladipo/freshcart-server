@@ -44,18 +44,20 @@ export const createProduct = asyncHandler(
  * @route GET /products
  * @access  Public
  */
-export const getAllProducts = asyncHandler(
-    async (_req: Request, res: Response, next: NextFunction) => {
-      const products = await Product.getAllProducts();
-      res.status(200).json({
-        error: false,
-        errors: [],
-        data: products,
-        message: 'Products retrieved successfully.',
-        status: 200,
-      });
-    }
-  );
+// export const getAllProducts = asyncHandler(
+  //   async (_req: Request, res: Response, next: NextFunction) => {
+      
+  //     const products = await Product.getAllProducts();
+      
+  //     res.status(200).json({
+  //       error: false,
+  //       errors: [],
+  //       data: products,
+  //       message: 'Products retrieved successfully.',
+  //       status: 200,
+  //     });
+  //   }
+  // );
 
 /**
  * @name getProductById
@@ -137,7 +139,7 @@ export const addToCart = asyncHandler(
       if (!product) {
         return next(new ErrorResponse('Error', 404, ['Product not found']));
       }
-      await product.addToCart(new mongoose.Types.ObjectId(req.params.userId));
+      await product.addToCart(req.params.userId);
       res.status(200).json({
         error: false,
         errors: [],

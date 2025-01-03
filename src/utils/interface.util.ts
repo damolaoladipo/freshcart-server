@@ -114,7 +114,7 @@ export interface IProductDoc extends Document {
   id: ObjectId;
   
   getAllProducts: () => void
-  addToCart: (userId: ObjectId) => void;
+  addToCart: (userId: string) => void;
   like: (userId: ObjectId) => void;
   updateStock: (quantity: number) => Promise<void>;
   applyDiscount: (discountPercentage: number) => Promise<void>;
@@ -123,6 +123,12 @@ export interface IProductDoc extends Document {
   removeTag: (tag: string) => Promise<void>;
   isInStock: () => boolean;
 }
+
+export interface IProductModel extends Model<IProductDoc> {
+  getAllProducts: () => Promise<IProductDoc[]>;
+}
+
+
 
 
 export interface ICartDoc extends Document {

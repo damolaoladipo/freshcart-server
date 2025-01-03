@@ -10,114 +10,6 @@ class CheckoutService {
   constructor() {}
 
   /**
-   * @name addAddress
-   * @param req - The request object
-   * @param res - The response object
-   * @param next - The next middleware function
-   * @returns { Promise<IResult> } - see IResult
-   */
-  public async addAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
-    const result: IResult = { error: false, message: "", code: 200, data: {} };
-    const { userId, addressDetails } = req.body;
-
-
-      const user = await User.findById(userId);
-
-      if (!user) {
-        result.error = true;
-        result.message = "User not found";
-        result.code = 404;
-        return result;
-      }
-
-      const newAddress = new Address(addressDetails);
-      user.address.push(newAddress);
-      await user.save();
-
-      result.error = false;
-      result.message = "Address added successfully";
-      result.data = newAddress;
-      return result;
-  }
-
-  /**
-   * @name updateAddress
-   * @param req - The request object
-   * @param res - The response object
-   * @param next - The next middleware function
-   * @returns { Promise<IResult> } - see IResult
-   */
-  public async updateAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
-    const result: IResult = { error: false, message: "", code: 200, data: {} };
-    const { userId, addressId, updatedAddressDetails } = req.body;
-
-      const user = await User.findById(userId);
-
-      if (!user) {
-        result.error = true;
-        result.message = "User not found";
-        result.code = 404;
-        return result;
-      }
-
-      const address = user.address.id(addressId);
-
-      if (!address) {
-        result.error = true;
-        result.message = "Address not found";
-        result.code = 404;
-        return result;
-      }
-
-      Object.assign(address, updatedAddressDetails);
-      await user.save();
-
-      result.error = false;
-      result.message = "Address updated successfully";
-      result.data = address;
-      return result;
-  }
-
-  /**
-   * @name selectShippingAddress
-   * @param req - The request object
-   * @param res - The response object
-   * @param next - The next middleware function
-   * @returns { Promise<IResult> } - see IResult
-   */
-  public async selectShippingAddress(req: Request, res: Response, next: NextFunction): Promise<IResult> {
-    const result: IResult = { error: false, message: "", code: 200, data: {} };
-    const { userId, addressId } = req.body;
-
-    
-      const user = await User.findById(userId);
-
-      if (!user) {
-        result.error = true;
-        result.message = "User not found";
-        result.code = 404;
-        return result;
-      }
-
-      const address = user.addresses.id(addressId);
-
-      if (!address) {
-        result.error = true;
-        result.message = "Address not found";
-        result.code = 404;
-        return result;
-      }
-
-      user.address = addressId;
-      await user.save();
-
-      result.error = false;
-      result.message = "Shipping address selected successfully";
-      result.data = address;
-      return result;
-  }
-
-  /**
    * @name processPayment
    * @param req - The request object
    * @param res - The response object
@@ -232,6 +124,119 @@ class CheckoutService {
       return result;
    
   }
+
+
+   /**
+   * @name addAddress
+   * @param req - The request object
+   * @param res - The response object
+   * @param next - The next middleware function
+   * @returns { Promise<IResult> } - see IResult
+   */
+  // public async addAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
+  //   const result: IResult = { error: false, message: "", code: 200, data: {} };
+  //   const { userId, addressDetails } = req.body;
+
+
+  //     const user = await User.findById(userId);
+
+  //     if (!user) {
+  //       result.error = true;
+  //       result.message = "User not found";
+  //       result.code = 404;
+  //       return result;
+  //     }
+
+  //     const newAddress = new Address(addressDetails);
+  //     user.address.push(newAddress);
+  //     await user.save();
+
+  //     result.error = false;
+  //     result.message = "Address added successfully";
+  //     result.data = newAddress;
+  //     return result;
+  // }
+
+
+    /**
+   * @name selectShippingAddress
+   * @param req - The request object
+   * @param res - The response object
+   * @param next - The next middleware function
+   * @returns { Promise<IResult> } - see IResult
+   */
+  // public async selectShippingAddress(req: Request, res: Response, next: NextFunction): Promise<IResult> {
+  //   const result: IResult = { error: false, message: "", code: 200, data: {} };
+  //   const { userId, addressId } = req.body;
+
+    
+  //     const user = await User.findById(userId);
+
+  //     if (!user) {
+  //       result.error = true;
+  //       result.message = "User not found";
+  //       result.code = 404;
+  //       return result;
+  //     }
+
+  //     const address = user.addresses.id(addressId);
+
+  //     if (!address) {
+  //       result.error = true;
+  //       result.message = "Address not found";
+  //       result.code = 404;
+  //       return result;
+  //     }
+
+  //     user.address = addressId;
+  //     await user.save();
+
+  //     result.error = false;
+  //     result.message = "Shipping address selected successfully";
+  //     result.data = address;
+  //     return result;
+  // }
+
+
+    /**
+   * @name updateAddress
+   * @param req - The request object
+   * @param res - The response object
+   * @param next - The next middleware function
+   * @returns { Promise<IResult> } - see IResult
+   */
+  // public async updateAddress(req: Request, res: Response, next: NextFunction): Promise<IResult | any> {
+  //   const result: IResult = { error: false, message: "", code: 200, data: {} };
+  //   const { userId, addressId, updatedAddressDetails } = req.body;
+
+  //     const user = await User.findById(userId);
+
+  //     if (!user) {
+  //       result.error = true;
+  //       result.message = "User not found";
+  //       result.code = 404;
+  //       return result;
+  //     }
+
+  //     const address = user.address.id(addressId);
+
+  //     if (!address) {
+  //       result.error = true;
+  //       result.message = "Address not found";
+  //       result.code = 404;
+  //       return result;
+  //     }
+
+  //     Object.assign(address, updatedAddressDetails);
+  //     await user.save();
+
+  //     result.error = false;
+  //     result.message = "Address updated successfully";
+  //     result.data = address;
+  //     return result;
+  // }
+
+
 }
 
 export default new CheckoutService();
