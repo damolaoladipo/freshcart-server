@@ -17,7 +17,6 @@ class AuthMapper {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      password: user.password,
     
       username: user.username,
       avatar: user.avatar,

@@ -7,7 +7,7 @@ const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
   {
     user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
-    address: { type: AddressSchema, required: true },
+    address: { type: Schema.Types.ObjectId, ref: DbModels.ADDRESS,  required: true },
     trackingNumber: { type: String, required: true },
     status: { type: String, default: "Pending" },
     shipmentDate: { type: Date, required: true },

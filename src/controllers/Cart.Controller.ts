@@ -58,7 +58,7 @@ export const getCart = asyncHandler(
  * @route PUT /cart/:userId/add
  * @access  Private
  */
-export const addToCart = asyncHandler(
+export const addToCarts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
     const { productId, quantity } = req.body;

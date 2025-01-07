@@ -35,14 +35,14 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}))
 app.use(cookieParser())
 
 // manage sessions
-app.use(manageSession);
+// app.use(manageSession);
 
-app.use(session({
-    secret: process.env.SESSION_SECRET || "", 
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } 
-  }));
+// app.use(session({
+//     secret: process.env.SESSION_SECRET || "", 
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: false } 
+//   }));
 
 // temporaary files directory
 app.use(fileUpload({useTempFiles: true, tempFileDir: path.join(__dirname, 'tmp')}))
@@ -95,11 +95,11 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
         error: false,
         errors: [],
         data: {
-            name: "GLOBITT API - DEFAULT",
+            name: "Shopery API - DEFAULT",
             version: "1.0.0",
 
         },
-        message: 'GLOBITT api v1.0.0',
+        message: 'Shopery api v1.0.0',
         status: 200
 
     })

@@ -45,7 +45,7 @@ export interface IUserDoc extends Document {
     isUser: boolean;	
     isActive: boolean;
     loginLimit: number;	
-    sessionToken: string;
+    sessionToken: string | undefined;
     
     merchant: ObjectId | any;
     guest: ObjectId | any;

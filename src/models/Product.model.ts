@@ -54,7 +54,7 @@ ProductSchema.statics.findByName = async function (name: string) {
   return role ?? null;
 };
 
-ProductSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, quantity: number) {
+ProductSchema.methods.addToCartz = function (productId: mongoose.Types.ObjectId, quantity: number) {
     const productIndex = this.products.findIndex((p: IProductDoc) => p.id.toString() === productId.toString());
   
     if (productIndex !== -1) {

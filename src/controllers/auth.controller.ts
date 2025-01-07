@@ -26,44 +26,44 @@ export const register = asyncHandler(
       req.body.email = req.body.email.toLowerCase();
     }
 
-    const { sessionToken } = req.cookies;
+    // const { sessionTokens } = req.cookies;
 
-    if (!sessionToken) {
-      const validateSession = await SessionService.generateSessionToken(
-        req,
-        res,
-        next
-      );
-      if (validateSession.error) {
-        return next(
-          new ErrorResponse("Session token is missing", 400, [
-            validateSession.message,
-          ])
-        );
-      }
-      return next(
-        new ErrorResponse("Session token is missing", 400, [
-          "Session token is required",
-        ])
-      );
-    }
+    // if (!sessionTokens) {
+    //   const validateSession = await SessionService.generateSessionToken(
+    //     req,
+    //     res,
+    //     next
+    //   );
+    //   if (validateSession.error) {
+    //     return next(
+    //       new ErrorResponse("Session token is missing", 400, [
+    //         validateSession.message,
+    //       ])
+    //     );
+    //   }
+    //   return next(
+    //     new ErrorResponse("Session token is missing", 400, [
+    //       "Session token is required",
+    //     ])
+    //   );
+    // }
 
-    const validSession = await SessionService.verifyToken(
-      sessionToken,
-      process.env.SESSION_SECRET as string
-    );
-    if (validSession.error) {
-      return next(
-        new ErrorResponse("Session token is invalid", 403, [
-          validSession.message,
-        ])
-      );
-    }
+    // const validSession = await SessionService.verifyToken(
+    //   sessionToken,
+    //   process.env.SESSION_SECRET as string
+    // );
+    // if (validSession.error) {
+    //   return next(
+    //     new ErrorResponse("Session token is invalid", 403, [
+    //       validSession.message,
+    //     ])
+    //   );
+    // }
 
-    const existingSession = await SessionToken.findOne({ token: sessionToken });
-    if (!existingSession) {
-      return next(new ErrorResponse("Session token has expired", 403, []));
-    }
+    // const existingSession = await SessionToken.findOne({ token: sessionToken });
+    // if (!existingSession) {
+    //   return next(new ErrorResponse("Session token has expired", 403, []));
+    // }
 
     const validate = await AuthService.validateRegister(req.body);
     if (validate.error) {
@@ -129,19 +129,19 @@ export const login = asyncHandler(
       );
     }
 
-    const existingToken = await SessionToken.findOne({
-      userId: validate.data.id,
-    });
+    // const existingToken = await SessionToken.findOne({
+    //   userId: validate.data.id,
+    // });
 
-    if (existingToken) {
-      existingToken.token = validate.data.SessionToken;
-      await existingToken.save();
-    } else {
-      await SessionToken.create({
-        token: validate.data.SessionToken,
-        userId: validate.data.id,
-      });
-    }
+    // if (existingToken) {
+    //   existingToken.token = validate.data.SessionToken;
+    //   await existingToken.save();
+    // } else {
+    //   await SessionToken.create({
+    //     token: validate.data.SessionToken,
+    //     userId: validate.data.id,
+    //   });
+    // }
 
     const user = await User.findOne({ _id: validate.data.id });
     if (!user) {
@@ -151,12 +151,12 @@ export const login = asyncHandler(
     const lastLogin = new Date();
     await User.findByIdAndUpdate(validate.data.id, { lastLogin });
 
-    res.cookie("sessionToken", validate.data.SessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    });
+    // res.cookie("sessionToken", validate.data.SessionToken, {
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === "production",
+    //   sameSite: "strict",
+    //   maxAge: 30 * 24 * 60 * 60 * 1000,
+    // });
 
     const mappedData = await authMapper.mapRegisteredUser(validate.data);
 
@@ -176,22 +176,22 @@ export const login = asyncHandler(
  * @param res - The response object
  * @param next - The next middleware function
  */
-export const generateSessionToken = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await SessionService.generateSessionToken(req, res, next);
-    if (result.error) {
-      return next(new ErrorResponse("Error", result.code, [result.message]));
-    }
+// export const generateSessionToken = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const result = await SessionService.generateSessionToken(req, res, next);
+//     if (result.error) {
+//       return next(new ErrorResponse("Error", result.code, [result.message]));
+//     }
 
-    res.status(200).json({
-      error: false,
-      errors: [],
-      data: { sessionToken: result.data.sessionToken },
-      message: "Session token created successfully",
-      status: 200,
-    });
-  }
-);
+//     res.status(200).json({
+//       error: false,
+//       errors: [],
+//       data: { sessionToken: result.data.sessionToken },
+//       message: "Session token created successfully",
+//       status: 200,
+//     });
+//   }
+// );
 
 /**
  * Creates a session token for the user, includes the userId in the payload.
@@ -199,32 +199,32 @@ export const generateSessionToken = asyncHandler(
  * @param res - The response object
  * @param next - The next middleware function
  */
-export const createSessionToken = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { sessionToken, userId } = req.body;
+// export const createSessionToken = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { sessionToken, userId } = req.body;
 
-    if (!sessionToken) {
-      return next(
-        new ErrorResponse("Session token is required", 400, [
-          "Session token is required",
-        ])
-      );
-    }
+//     if (!sessionToken) {
+//       return next(
+//         new ErrorResponse("Session token is required", 400, [
+//           "Session token is required",
+//         ])
+//       );
+//     }
 
-    const result = await SessionService.createSessionToken(req, res, next);
-    if (result.error) {
-      return next(new ErrorResponse("Error", result.code, [result.message]));
-    }
+//     const result = await SessionService.createSessionToken(req, res, next);
+//     if (result.error) {
+//       return next(new ErrorResponse("Error", result.code, [result.message]));
+//     }
 
-    res.status(200).json({
-      error: false,
-      errors: [],
-      data: { sessionToken: result.data.sessionToken },
-      message: "Session token refreshed successfully",
-      status: 200,
-    });
-  }
-);
+//     res.status(200).json({
+//       error: false,
+//       errors: [],
+//       data: { sessionToken: result.data.sessionToken },
+//       message: "Session token refreshed successfully",
+//       status: 200,
+//     });
+//   }
+// );
 
 /**
  * @name logout
@@ -288,42 +288,42 @@ export const logout = async (
  * @route POST /auth/forgot-password
  * @access  Public
  */
-export const forgotPassword = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email } = req.body;
+// export const forgotPassword = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { email } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return next(new ErrorResponse("User not found", 404, []));
-    }
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return next(new ErrorResponse("User not found", 404, []));
+//     }
 
-    const resetToken = createSessionToken(req, res, next);
-    const expirationTime = new Date(Date.now() + 15 * 60 * 1000);
+//     const resetToken = createSessionToken(req, res, next);
+//     const expirationTime = new Date(Date.now() + 15 * 60 * 1000);
 
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordTokenExpire = expirationTime;
-    await user.save();
+//     user.resetPasswordToken = resetToken;
+//     user.resetPasswordTokenExpire = expirationTime;
+//     await user.save();
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
+//     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
 
-    const message = {
-      to: user.email,
-      from: process.env.EMAIL_SENDER as string,
-      subject: "Password Reset Request",
-      html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 15 minutes.</p>`,
-    };
+//     const message = {
+//       to: user.email,
+//       from: process.env.EMAIL_SENDER as string,
+//       subject: "Password Reset Request",
+//       html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 15 minutes.</p>`,
+//     };
 
-    // await sgMail.send(message);
+//     // await sgMail.send(message);
 
-    res.status(200).json({
-      error: false,
-      errors: [],
-      data: {},
-      message: "Password reset link sent to email",
-      status: 200,
-    });
-  }
-);
+//     res.status(200).json({
+//       error: false,
+//       errors: [],
+//       data: {},
+//       message: "Password reset link sent to email",
+//       status: 200,
+//     });
+//   }
+// );
 
 /**
  * @name resetPassword

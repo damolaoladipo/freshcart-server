@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { 
     changePassword, 
-    createSessionToken, 
-    forgotPassword, 
-    generateSessionToken, 
+    // createSessionToken, 
+    // forgotPassword, 
+    // generateSessionToken, 
     login, 
     logout, 
     register, 
@@ -17,9 +17,9 @@ const authRouter = Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
-authRouter.get("/session-token", generateSessionToken);
-authRouter.get("/refresh-token", createSessionToken);
-authRouter.post("/forgot-password", forgotPassword);
+// authRouter.get("/session-token", generateSessionToken);
+// authRouter.get("/refresh-token", createSessionToken);
+// authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
 authRouter.put("/change-password", checkAuth, changePassword);
 
