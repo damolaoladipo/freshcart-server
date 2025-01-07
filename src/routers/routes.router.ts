@@ -9,6 +9,7 @@ import productRouter from "./routes/product.router";
 import shipmentRouter from "./routes/shipment.router";
 import transactionRouter from "./routes/transaction.router";
 import wishListRouter from "./routes/wishlist.router";
+import orderItemRouter from "./routes/orderitem.router";
 
 
 
@@ -19,6 +20,7 @@ v1Routes.use("/user", userRouter);
 v1Routes.use("/cart", cartRouter);
 v1Routes.use("/notification", notificationRouter);
 v1Routes.use("/order", orderRouter);
+v1Routes.use("/orderitem", orderItemRouter)
 v1Routes.use("/payment", paymentPartnerRouter);
 v1Routes.use("/product", productRouter);
 v1Routes.use("/shipment", shipmentRouter);

@@ -178,6 +178,26 @@ export interface IOrderDoc extends Document {
   id: ObjectId;
 }
 
+
+
+export interface IOrderItemDoc extends Document {
+  product: ObjectId;
+  order: ObjectId;
+  quantity: number;
+  pricePerUnit: number;
+  totalPrice: number;
+  discount: number;
+  status: string;
+
+  createdAt: Date;
+  updatedAt: Date;
+  _version: number;
+  _id: ObjectId;
+  id: ObjectId;
+
+  remove: () => void;
+}
+
 export interface ITransactionDoc extends Document {
   order: ObjectId;
   amount: number;
