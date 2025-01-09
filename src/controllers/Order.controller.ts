@@ -14,7 +14,80 @@ import Transaction from "../models/Transaction.model";
  * @route POST /order
  * @access  Private
  */
+export const createOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { userId, address, orderItems, totalAmount, payment, shipment } = req.body;
+    
+    const cart = await Cart.findOne({ user: userId });
+    if (!cart || cart.products.length === 0) {
+      return next(new ErrorResponse("Cart is empty or not found", 400, []));  
+    }
+   
+    const userAddress = await Address.findOne({ id: address, user: userId });
+    if (!userAddress) {
+    return next(new ErrorResponse("Invalid address provided.", 400, []));
+    }
 
+    const shipmentMethod = await Shipment.findById(shipment);
+    if (!shipmentMethod) {
+    return next(new ErrorResponse("Invalid shipment method.", 400, []));
+    }
+
+    const paymentDetails = await Transaction.findOne({ id: payment, user: userId });
+    if (!paymentDetails || !paymentDetails.isSuccessful) {
+    return next(new ErrorResponse("Payment not processed or invalid.", 400, []));
+    }
+
+    const productUpdates = [];
+    for (const product of cart.products) {
+      const productDetails = await Product.findById(product.productId);
+      if (!productDetails || productDetails.stockQuantity < product.quantity) {
+        return next(new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []));
+      }
+      productDetails.stockQuantity -= product.quantity;
+      productUpdates.push(productDetails.save())
+    }
+    
+    await Promise.all(productUpdates)
+
+    const order = new Order({
+      user: userId,
+      address,
+      orderItems,
+      totalAmount,
+      payment,
+      shipment,
+    });
+    await order.save()
+
+    // Step 7: Create order items and associate them with the order
+    const orderItemPromises = cart.products.map(async (product) => {
+      const productDetails = await Product.findById(product.productId);
+      const   orderItem = new OrderItem({
+        order: order._id,
+        product: product.productId,
+        quantity: product.quantity,
+        pricePerUnit: productDetails.price,
+      });
+      return orderItem.save();
+    });
+
+    await Promise.all(orderItemPromises);
+    
+
+    cart.products = [];
+    cart.coupon = null;
+    await cart.save();
+
+    await order.placeOrder();
+
+    res.status(201).json({
+      error: false,
+      message: "Order placed successfully.",
+      data: order,
+    });
+  }
+);
 
 
 
