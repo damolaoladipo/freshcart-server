@@ -102,4 +102,44 @@ export const editUser = asyncHandler(
     }
   );
   
-  
+/**
+ * @name getAllUsers
+ * @description Retrieves a list of all users excluding sensitive information like email, password, and permissions.
+ * @route GET /users
+ * @access Private (Admin or higher-level roles)
+ */
+export const getAllUsers = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+      
+      if (!req.user.isAdmin && !req.user.isSuper) {
+        return next(new ErrorResponse("Unauthorized access", 403, []));
+      }
+
+      const users = await User.find({}, "-password -emailCode -role.permissions");
+
+      const userData = users.map((user) => ({
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        avatar: user.avatar,
+        phoneNumber: user.phoneNumber,
+        phoneCode: user.phoneCode,
+        countryPhone: user.countryPhone,
+        address: user.address,
+        accountStatus: user.accountStatus,
+        isSuper: user.isSuper,
+        isAdmin: user.isAdmin,
+        isMerchant: user.isMerchant,
+        isUser: user.isUser,
+      }));
+
+      res.status(200).json({
+        error: false,
+        errors: [],
+        data: userData,
+        message: "Users retrieved successfully.",
+        status: 200,
+      });
+  }
+);

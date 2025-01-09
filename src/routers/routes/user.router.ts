@@ -6,6 +6,6 @@ import checkAuth from "../../middlewares/checkAuth.mdw";
 const userRouter = Router();
 
 userRouter.get("/", checkAuth, getUser);
-userRouter.put("/", checkAuth, editUser);
+userRouter.put("/edit", checkAuth, editUser);
 
 export default userRouter;

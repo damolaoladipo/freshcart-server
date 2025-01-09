@@ -119,7 +119,7 @@ export const login = asyncHandler(
     res.status(200).json({
       error: false,
       errors: [],
-      data: { ...mappedData, authToken: validate.data.authToken },
+      data: { ...mappedData, authToken: validate.data.token },
       message: "User login successful",
       status: 200,
     });
