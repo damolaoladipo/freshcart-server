@@ -6,13 +6,13 @@ import { DbModels } from "../utils/enum.util";
 const ProductSchema = new mongoose.Schema<IProductDoc>(
   {
     name: { type: String, required: true },
-    description: { type: String, maxLength: 600, default: "" },
+    description: { type: String, maxLength: 600 },
     price: { type: Number, required: true },
     category: { type: String, required: true },
     tag: { type: [String], default: [], required: true },
     stockQuantity: { type: Number, required: true },
     imageURLs: { type: [String], required: true },
-    merchant: { type: Schema.Types.ObjectId, ref: DbModels.MERCHANT },
+    merchant: { type: String, required: true },
     // addToCart: { type: Boolean, default: false },
     like: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
@@ -45,7 +45,7 @@ ProductSchema.pre<IProductDoc>("insertMany", async function (next) {
   next();
 });
 
-ProductSchema.methods.getAllProducts = async function (): Promise<IProductDoc[]> {
+ProductSchema.methods.getAllProducts = async function () {
   return Product.find({});
 };
 

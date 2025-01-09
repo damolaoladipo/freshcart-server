@@ -12,13 +12,25 @@ import ErrorResponse from "../utils/error.util";
 export const createCart = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.body;
+
     const existingCart = await Cart.findOne({ user: userId });
 
     if (existingCart) {
-      return res.status(400).json({ error: true, message: "Cart already exists." });
+      return res.status(400).json({
+        error: true,
+        message: "An active cart already exists for this user.",
+        data: existingCart,
+      });
+
     }
 
-    const cart = new Cart({ user: userId, products: [], coupon: null, checkout: false });
+    const cart = new Cart({ 
+      user: userId, 
+      products: [], 
+      coupon: null, 
+      checkout: false 
+    });
+
     await cart.save();
 
     res.status(201).json({
@@ -61,7 +73,13 @@ export const getCart = asyncHandler(
 export const addToCarts = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
+    
     const { productId, quantity } = req.body;
+
+    if (!productId || !quantity) {
+      console.log("product id", productId, "quantity", quantity)
+      return res.status(400).json({ error: true, message: "ProductId and quantity are required." });
+    }
 
     const cart = await Cart.findOne({ user: userId });
 
@@ -106,32 +124,6 @@ export const removeFromCart = asyncHandler(
   }
 );
 
-/**
- * @name applyCoupon
- * @description Applies a coupon to the cart
- * @route PUT /cart/:userId/coupon
- * @access  Private
- */
-export const applyCoupon = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.params.userId;
-    const { coupon } = req.body;
-
-    const cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-      return next(new ErrorResponse("Cart not found", 404, []));
-    }
-
-    await cart.applyCoupon(coupon);
-
-    res.status(200).json({
-      error: false,
-      message: "Coupon applied.",
-      data: cart,
-    });
-  }
-);
 
 /**
  * @name checkout
@@ -154,6 +146,37 @@ export const checkout = asyncHandler(
     res.status(200).json({
       error: false,
       message: "Checkout successful.",
+      data: cart,
+    });
+  }
+);
+
+
+
+//Future Iteration
+
+/**
+ * @name applyCoupon
+ * @description Applies a coupon to the cart
+ * @route PUT /cart/:userId/coupon
+ * @access  Private
+ */
+export const applyCoupon = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.userId;
+    const { coupon } = req.body;
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return next(new ErrorResponse("Cart not found", 404, []));
+    }
+
+    await cart.applyCoupon(coupon);
+
+    res.status(200).json({
+      error: false,
+      message: "Coupon applied.",
       data: cart,
     });
   }

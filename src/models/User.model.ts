@@ -30,12 +30,8 @@ const UserSchema = new Schema(
     isUser: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
 
-    merchant: { type: Schema.Types.ObjectId, ref: DbModels.MERCHANT },
-    Guest: { type: Schema.Types.ObjectId, ref: DbModels.GUEST },
     role: { type: Schema.Types.ObjectId, ref: DbModels.ROLE },
-    cart: [{ type: Schema.Types.ObjectId, ref: DbModels.CART }],
-    wishlist: [{ type: Schema.Types.ObjectId, ref: DbModels.WISHLIST }],
-    address: [Address.schema],
+
   },
   {
     timestamps: true,

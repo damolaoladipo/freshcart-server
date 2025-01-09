@@ -44,20 +44,20 @@ export const createProduct = asyncHandler(
  * @route GET /products
  * @access  Public
  */
-// export const getAllProducts = asyncHandler(
-  //   async (_req: Request, res: Response, next: NextFunction) => {
+export const getAllProducts = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
       
-  //     const products = await Product.getAllProducts();
+      const products = await Product.find({})
       
-  //     res.status(200).json({
-  //       error: false,
-  //       errors: [],
-  //       data: products,
-  //       message: 'Products retrieved successfully.',
-  //       status: 200,
-  //     });
-  //   }
-  // );
+      res.status(200).json({
+        error: false,
+        errors: [],
+        data: products,
+        message: 'Products retrieved successfully.',
+        status: 200,
+      });
+    }
+  );
 
 /**
  * @name getProductById

@@ -100,7 +100,7 @@ export interface IProductDoc extends Document {
   stockQuantity: number;
   imageURLs: string[];
   
-  merchant: ObjectId | any;
+  merchant: string
   inStock: boolean;
   discount: number;
   count: number;
@@ -112,7 +112,8 @@ export interface IProductDoc extends Document {
   _id: ObjectId;
   id: ObjectId;
   
-  getAllProducts: () => void
+  // getAllProducts: () => void
+  getAllProducts(): Array<IProductDoc>;
   addToCart: (userId: string) => void;
   like: (userId: ObjectId) => void;
   updateStock: (quantity: number) => Promise<void>;
@@ -123,15 +124,9 @@ export interface IProductDoc extends Document {
   isInStock: () => boolean;
 }
 
-export interface IProductModel extends Model<IProductDoc> {
-  getAllProducts: () => Promise<IProductDoc[]>;
-}
-
-
-
 
 export interface ICartDoc extends Document {
-  users: ObjectId;
+  user: ObjectId;
   products: { productId: ObjectId; quantity: number }[];
   coupon: string | null;
   checkout: boolean;

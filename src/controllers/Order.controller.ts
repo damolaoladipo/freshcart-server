@@ -3,6 +3,10 @@ import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import Order from "../models/Order.model";
 import Product from "../models/Product.model";
+import Cart from "../models/Cart.model";
+import Shipment from "../models/Shipment.model";
+import Address from "../models/Address.model";
+import Transaction from "../models/Transaction.model";
 
 /**
  * @name createOrder
@@ -10,28 +14,12 @@ import Product from "../models/Product.model";
  * @route POST /order
  * @access  Private
  */
-export const createOrder = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, address, orderItems, totalAmount, payment, shipment } = req.body;
 
-    const order = new Order({
-      user: userId,
-      address,
-      orderItems,
-      totalAmount,
-      payment,
-      shipment,
-    });
 
-    await order.placeOrder();
 
-    res.status(201).json({
-      error: false,
-      message: "Order placed successfully.",
-      data: order,
-    });
-  }
-);
+
+
+
 
 /**
  * @name getOrder

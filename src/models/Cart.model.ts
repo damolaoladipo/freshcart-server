@@ -4,13 +4,17 @@ import { DbModels } from "../utils/enum.util";
 
 const CartSchema = new mongoose.Schema<ICartDoc>(
   {
-    users: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
-    products: [
+    user: { type: Schema.Types.ObjectId, ref: DbModels.USER },
+    products: {
+      type: [
         {
           productId: { type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true },
-          quantity: { type: Number, required: true },
+          quantity: { type: Number, required: true, default: 1 },
         },
       ],
+      default: [], 
+    },
+      
     coupon: { type: String, default: null },
     checkout: { type: Boolean, default: false },
 
@@ -31,7 +35,7 @@ CartSchema.methods.getAll = async function () {
 };
 
 CartSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, quantity: number) {
-    const productIndex = this.products.findIndex((p: IProductDoc) => p.id.toString() === productId.toString());
+    const productIndex = this.products.findIndex((p: any) => p.productId.toString() === productId.toString());
   
     if (productIndex !== -1) {
       this.products[productIndex].quantity += quantity;
@@ -42,8 +46,15 @@ CartSchema.methods.addToCart = function (productId: mongoose.Types.ObjectId, qua
     return this.save();
   };
 
+CartSchema.set("toJSON", { virtuals: true, getters: true });
+
 CartSchema.methods.removeFromCart = function (productId: mongoose.Types.ObjectId) {
     this.products = this.products.filter((p: IProductDoc) => p.id.toString() !== productId.toString());
+    return this.save();
+  };
+
+CartSchema.methods.proceedToCheckout = function () {
+    this.checkout = true;
     return this.save();
   };
   
@@ -52,10 +63,6 @@ CartSchema.methods.applyCoupon = function (coupon: string) {
     return this.save();
   };
   
-CartSchema.methods.proceedToCheckout = function () {
-    this.checkout = true;
-    return this.save();
-  };
 
 const Cart: Model<ICartDoc> = mongoose.model<ICartDoc>(
   DbModels.CART,
