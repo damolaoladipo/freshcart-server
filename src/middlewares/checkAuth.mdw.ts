@@ -18,7 +18,7 @@ function checkAuth(req: Request, res: Response, next: NextFunction) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     req.user = decoded;
     next();
   } catch (error) {

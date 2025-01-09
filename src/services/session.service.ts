@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import SessionToken from '../models/SessionToken.model';
+import SessionToken from '../models/Token.model';
 import { Request, Response, NextFunction } from "express";
 import { generateRandomChars } from "../utils/helper.util";
 import User from '../models/User.model';

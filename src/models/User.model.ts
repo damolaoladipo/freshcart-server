@@ -11,7 +11,7 @@ const UserSchema = new Schema(
     firstName: { type: String, default: "" },
     lastName: { type: String, default: "" },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
-    password: { type: String, required: true, default: "", select: false },
+    password: { type: String, required: true, default: "", select: true },
 
     username: { type: String, default: "", unique: true },
     avatar: { type: String, default: "" },
@@ -19,10 +19,9 @@ const UserSchema = new Schema(
     phoneCode: { type: String, default: "+234" },
     countryPhone: { type: String, default: "" },
     userType: { type: String, default: "" },
-    resetPasswordToken: { type: String, default: "" },
     accountStatus: { type: String, default: "" },
     emailCode: { type: String, default: "" },
-    slug: { type: String, default: "" },
+
 
     isSuper: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
@@ -30,7 +29,6 @@ const UserSchema = new Schema(
     IsGuest: { type: Boolean, default: false },
     isUser: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    loginLimit: { type: Number, default: 5 },
 
     merchant: { type: Schema.Types.ObjectId, ref: DbModels.MERCHANT },
     Guest: { type: Schema.Types.ObjectId, ref: DbModels.GUEST },
@@ -53,10 +51,9 @@ const UserSchema = new Schema(
 UserSchema.set("toJSON", { virtuals: true, getters: true });
 UserSchema.pre<IUserDoc>("save", async function (next) {
   if (this.isModified("password")) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
   }
-
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
   this.slug = slugify(this.email, { lower: true, replacement: "-" });
 
   next();
@@ -71,29 +68,28 @@ UserSchema.methods.matchPassword = async function (password: string) {
 };
 
 UserSchema.methods.getAuthToken = async function () {
-  const secret = process.env.JWT_SECRET;
-  const expire = process.env.JWT_EXPIRY;
+
   let token: string = "";
 
-  if (secret) {
-    token = await jwt.sign(
-      {
-        id: this._id,
-        email: this.email,
-        isSuper: this.isSuper,
-        isAdmin: this.isAdmin,
-        isMerchant: this.isMerchant,
-        isGuest: this.IsGuest,
-        isUser: this.isUser,
-        role: this.role,
-      },
-      secret,
-      {
-        algorithm: "HS512",
-        expiresIn: expire,
-      }
-    );
-  }
+  if (process.env.JWT_SECRET || process.env.JWT_EXPIRY ) 
+ 
+   token = await jwt.sign(
+    {
+      id: this._id,
+      email: this.email,
+      isSuper: this.isSuper,
+      isAdmin: this.isAdmin,
+      isMerchant: this.isMerchant,
+      isGuest: this.IsGuest,
+      isUser: this.isUser,
+      role: this.role,
+    },
+    process.env.JWT_SECRET || '',
+    {
+      algorithm: "HS512",
+      expiresIn: process.env.JWT_EXPIRY,
+    }
+  );
 
   return token;
 };

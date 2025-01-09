@@ -14,4 +14,6 @@ orderRouter.get("/:id", checkAuth, getOrder);
 orderRouter.put("/:id/status", checkAuth, updateOrderStatus);
 orderRouter.get("/user/:userId", checkAuth, getUserOrders);
 
+//get all orders
+
 export default orderRouter;

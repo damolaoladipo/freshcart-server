@@ -9,6 +9,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     let errors: Array<any> = []
     let error = {...err}
 
+    
     if (err.errors) {
         errors = Object.values(err.errors).map((item: any) => {
 
@@ -40,6 +41,12 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
             message = 'An errror occured'
             error = new ErrorResponse(message, 500, errors)
         }
+    }
+    
+
+    if (!error.statusCode) {
+        error.statusCode = 500;  
+        error.message = error.message || 'Internal Server Error';  
     }
 
     res.status(error.statusCode).json({

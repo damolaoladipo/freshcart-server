@@ -32,8 +32,8 @@ export interface IUserDoc extends Document {
     phoneCode: string;
     countryPhone: string;
     userType: string;
-    resetPasswordToken: any;
-    resetPasswordTokenExpire: any
+    Token: any;
+    TokenExpire: any
     accountStatus: string;
     emailCode: string;
     slug: string;
@@ -45,7 +45,6 @@ export interface IUserDoc extends Document {
     isUser: boolean;	
     isActive: boolean;
     loginLimit: number;	
-    sessionToken: string | undefined;
     
     merchant: ObjectId | any;
     guest: ObjectId | any;
@@ -81,11 +80,11 @@ export interface IAddress {
     data: any;
   }
   
-export interface ISessionToken extends Document {
+export interface IToken extends Document {
     token: string;
     userId: ObjectId;
     createdAt: Date;
-    removeSession: () => void;
+    removeToken: () => void;
   }
 
 export interface IRandoChar {

@@ -1,16 +1,16 @@
 import mongoose, { model, Model } from "mongoose";
-import { ISessionToken } from "../utils/interface.util";
+import { IToken } from "../utils/interface.util";
 import { DbModels } from "../utils/enum.util";
 
-const SessionTokenSchema = new mongoose.Schema<ISessionToken>({
+const TokenSchema = new mongoose.Schema<IToken>({
   token: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: DbModels.USER},
   createdAt: { type: Date, default: Date.now, expires: "30d" },
 });
 
-const SessionToken: Model<ISessionToken> = model<ISessionToken>(
+const Token: Model<IToken> = model<IToken>(
     DbModels.SESSIONTOKEN,
-    SessionTokenSchema
+    TokenSchema
 );
 
-export default SessionToken;
+export default Token;

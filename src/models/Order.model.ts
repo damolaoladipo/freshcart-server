@@ -15,6 +15,7 @@ const OrderSchema = new mongoose.Schema<IOrderDoc>(
     orderDate: { type: Date, default: Date.now },
     status: { type: String, default: "pending" },
     totalAmount: { type: Number, required: true },
+    
     orderItems: [
       {
         productId: { type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true },

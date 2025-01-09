@@ -13,11 +13,11 @@ const ProductSchema = new mongoose.Schema<IProductDoc>(
     stockQuantity: { type: Number, required: true },
     imageURLs: { type: [String], required: true },
     merchant: { type: Schema.Types.ObjectId, ref: DbModels.MERCHANT },
-    addToCart: { type: Boolean, default: false },
+    // addToCart: { type: Boolean, default: false },
     like: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
     discount: { type: Number, default: 0 },
-    count: { type: Number, default: 0 },
+    // count: { type: Number, default: 0 },
     slug: { type: String, default: "" },
   },
   {

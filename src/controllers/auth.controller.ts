@@ -7,10 +7,9 @@ import AuthService from "../services/auth.service";
 import userService from "../services/user.service";
 import { RegisterDTO } from "../dtos/auth.dto";
 import { UserType } from "../utils/enum.util";
-import SessionToken from "../models/SessionToken.model";
-import SessionService from "../services/session.service"; // Import SessionService
 import { generateRandomChars } from "../utils/helper.util";
 import { checkSessionTokenInDb } from "../utils/session.util";
+import Token from "../models/Token.model";
 
 /**
  * @name register
@@ -25,46 +24,6 @@ export const register = asyncHandler(
     if (req.body.email) {
       req.body.email = req.body.email.toLowerCase();
     }
-
-    // const { sessionTokens } = req.cookies;
-
-    // if (!sessionTokens) {
-    //   const validateSession = await SessionService.generateSessionToken(
-    //     req,
-    //     res,
-    //     next
-    //   );
-    //   if (validateSession.error) {
-    //     return next(
-    //       new ErrorResponse("Session token is missing", 400, [
-    //         validateSession.message,
-    //       ])
-    //     );
-    //   }
-    //   return next(
-    //     new ErrorResponse("Session token is missing", 400, [
-    //       "Session token is required",
-    //     ])
-    //   );
-    // }
-
-    // const validSession = await SessionService.verifyToken(
-    //   sessionToken,
-    //   process.env.SESSION_SECRET as string
-    // );
-    // if (validSession.error) {
-    //   return next(
-    //     new ErrorResponse("Session token is invalid", 403, [
-    //       validSession.message,
-    //     ])
-    //   );
-    // }
-
-    // const existingSession = await SessionToken.findOne({ token: sessionToken });
-    // if (!existingSession) {
-    //   return next(new ErrorResponse("Session token has expired", 403, []));
-    // }
-
     const validate = await AuthService.validateRegister(req.body);
     if (validate.error) {
       return next(
@@ -118,9 +77,10 @@ export const register = asyncHandler(
  */
 export const login = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.email) {
-      req.body.email = req.body.email.toLowerCase();
-    }
+   
+    if (!req.body.email || !req.body.password) {
+      return next(new ErrorResponse("Email and password are required", 400, []));
+    } req.body.email = req.body.email.toLowerCase();
 
     const validate = await AuthService.validateLogin(req.body);
     if (validate.error) {
@@ -129,41 +89,37 @@ export const login = asyncHandler(
       );
     }
 
-    // const existingToken = await SessionToken.findOne({
-    //   userId: validate.data.id,
-    // });
+    const authToken = await Token.findOne({
+      userId: validate.data.id,
+    });
 
-    // if (existingToken) {
-    //   existingToken.token = validate.data.SessionToken;
-    //   await existingToken.save();
-    // } else {
-    //   await SessionToken.create({
-    //     token: validate.data.SessionToken,
-    //     userId: validate.data.id,
-    //   });
-    // }
+    if (authToken) {
+      authToken.token = validate.data.token;
+      await authToken.save();
+    } else {
+      
+
+      if (!validate.data.token) {
+        return next(new ErrorResponse("Token generation failed", 500, []));
+      }
+
+      await Token.create({
+        token: validate.data.token,
+        userId: validate.data.id,
+      });
+    }
 
     const user = await User.findOne({ _id: validate.data.id });
     if (!user) {
       return next(new ErrorResponse("User not found", 404, []));
     }
 
-    const lastLogin = new Date();
-    await User.findByIdAndUpdate(validate.data.id, { lastLogin });
-
-    // res.cookie("sessionToken", validate.data.SessionToken, {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   maxAge: 30 * 24 * 60 * 60 * 1000,
-    // });
-
     const mappedData = await authMapper.mapRegisteredUser(validate.data);
 
     res.status(200).json({
       error: false,
       errors: [],
-      data: { ...mappedData, lastLogin, authToken: validate.data.authToken },
+      data: { ...mappedData, authToken: validate.data.authToken },
       message: "User login successful",
       status: 200,
     });
@@ -232,55 +188,65 @@ export const login = asyncHandler(
  * @route POST /auth/logout
  * @access Public
  */
-export const logout = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { sessionToken } = req.cookies;
-
-  if (!sessionToken) {
-    return next(
-      new ErrorResponse("Session token is missing", 400, [
-        "Session token is required",
-      ])
-    );
-  }
-
-  const session = await SessionToken.findOne({ token: sessionToken });
-  if (!session) {
-    return next(
-      new ErrorResponse("Session token not found", 403, [
-        "Session token not found or expired",
-      ])
-    );
-  }
-
-  await session.removeSession();
-
-  res.clearCookie("sessionToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-
-  req.session.destroy((err) => {
-    if (err) {
-      return next(
-        new ErrorResponse("Failed to destroy session", 500, [
-          "Server error occurred while logging out",
-        ])
-      );
-    }
-
+export const logout = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({
       error: false,
       errors: [],
       message: "User logged out successfully.",
       status: 200,
     });
-  });
-};
+  }
+);
+// export const logout = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   const { sessionToken } = req.cookies;
+
+//   if (!sessionToken) {
+//     return next(
+//       new ErrorResponse("Session token is missing", 400, [
+//         "Session token is required",
+//       ])
+//     );
+//   }
+
+//   const session = await SessionToken.findOne({ token: sessionToken });
+//   if (!session) {
+//     return next(
+//       new ErrorResponse("Session token not found", 403, [
+//         "Session token not found or expired",
+//       ])
+//     );
+//   }
+
+//   await session.removeSession();
+
+//   res.clearCookie("sessionToken", {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: "strict",
+//   });
+
+//   req.session.destroy((err) => {
+//     if (err) {
+//       return next(
+//         new ErrorResponse("Failed to destroy session", 500, [
+//           "Server error occurred while logging out",
+//         ])
+//       );
+//     }
+
+//     return res.status(200).json({
+//       error: false,
+//       errors: [],
+//       message: "User logged out successfully.",
+//       status: 200,
+//     });
+//   });
+// };
 
 /**
  * @name forgotPassword
@@ -351,7 +317,7 @@ export const resetPassword = asyncHandler(
     }
 
     user.password = newPassword;
-    user.resetPasswordTokenExpire = new Date();
+    user.TokenExpire = new Date();
     await user.save();
 
     res.status(200).json({
