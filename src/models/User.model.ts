@@ -51,9 +51,10 @@ const UserSchema = new Schema(
 UserSchema.set("toJSON", { virtuals: true, getters: true });
 UserSchema.pre<IUserDoc>("save", async function (next) {
   if (this.isModified("password")) {
-  }
-  const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  }
+  
   this.slug = slugify(this.email, { lower: true, replacement: "-" });
 
   next();
@@ -71,8 +72,13 @@ UserSchema.methods.getAuthToken = async function () {
 
   let token: string = "";
 
-  if (process.env.JWT_SECRET || process.env.JWT_EXPIRY ) 
- 
+  if (!process.env.JWT_SECRET ) {
+    
+    throw new Error("JWT_SECRET is not defined.");
+  }
+  if (!process.env.JWT_EXPIRY) {
+    throw new Error("JWT_EXPIRY is not defined.");
+  }
    token = await jwt.sign(
     {
       id: this._id,
@@ -84,7 +90,7 @@ UserSchema.methods.getAuthToken = async function () {
       isUser: this.isUser,
       role: this.role,
     },
-    process.env.JWT_SECRET || '',
+    process.env.JWT_SECRET,
     {
       algorithm: "HS512",
       expiresIn: process.env.JWT_EXPIRY,

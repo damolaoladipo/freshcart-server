@@ -36,12 +36,14 @@ class AuthService {
 
 
     if (!user) {
+      console.log("No User:", email)
       return this.handleInvalidCredentials(result);
 
     }
 
     const isPasswordCorrect = await user.matchPassword(password);
     if (!isPasswordCorrect) {
+      console.log("Incorrect password", email)
       return this.handleInvalidCredentials(result);
     }
     const authToken = await user.getAuthToken();
