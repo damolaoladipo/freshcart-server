@@ -18,6 +18,21 @@ export enum UserType {
     MERCHANT = "merchant",
     GUEST = "guest"
     }
+
+export enum Permissions {
+        VIEW_PRODUCTS = "view_products",
+        ADD_TO_CART = "add_to_cart",
+        REMOVE_FROM_CART = "remove_from_cart",
+        PLACE_ORDER = "place_order",
+        CANCEL_ORDER = "cancel_order",
+        VIEW_ORDER_HISTORY = "view_order_history",
+        MANAGE_PRODUCTS = "manage_products",
+        VIEW_CUSTOMERS = "view_customers",
+        MANAGE_CUSTOMERS = "manage_customers",
+        ACCESS_DASHBOARD = "access_dashboard",
+        MANAGE_PAYMENTS = "manage_payments"
+    }
+    
     
 export enum DbModels {
     USER = "User",
@@ -71,4 +86,17 @@ export enum NotificationStatus {
     UNREAD = "unread",
     FAILED = "failed", 
     PENDING = "pending" 
+}
+
+export enum Merchants {
+    GREEN_FARM = "Green Farm",
+    NATURES_BASKET = "Nature's Basket",
+    ORGANIC_VALLEY = "Organic Valley",
+    FRESH_AND_GREEN = "Fresh & Green",
+    HEALTHY_HARVEST = "Healthy Harvest",
+    VEGGIE_DELIGHT = "Veggie Delight",
+    EARTHY_GOODS = "Earthy Goods",
+    FARM_TO_FORK = "Farm to Fork",
+    WHOLESOME_MARKET = "Wholesome Market",
+    PURELY_PLANT = "Purely Plant"
 }

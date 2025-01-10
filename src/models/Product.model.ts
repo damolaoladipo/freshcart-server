@@ -1,7 +1,7 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IProductDoc } from "../utils/interface.util";
 import slugify from "slugify";
-import { DbModels } from "../utils/enum.util";
+import { DbModels, Merchants } from "../utils/enum.util";
 
 const ProductSchema = new mongoose.Schema<IProductDoc>(
   {
@@ -12,12 +12,11 @@ const ProductSchema = new mongoose.Schema<IProductDoc>(
     tag: { type: [String], default: [], required: true },
     stockQuantity: { type: Number, required: true },
     imageURLs: { type: [String], required: true },
-    merchant: { type: String, required: true },
-    // addToCart: { type: Boolean, default: false },
+    merchant: { type: String, enum: Object.values(Merchants), 
+      default: Merchants.GREEN_FARM, required: true },
     like: { type: Number, default: 0 },
     inStock: { type: Boolean, default: true },
     discount: { type: Number, default: 0 },
-    // count: { type: Number, default: 0 },
     slug: { type: String, default: "" },
   },
   {
