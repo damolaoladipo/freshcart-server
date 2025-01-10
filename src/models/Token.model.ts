@@ -1,11 +1,17 @@
 import mongoose, { model, Model, Schema } from "mongoose";
 import { IToken } from "../utils/interface.util";
-import { DbModels } from "../utils/enum.util";
+import { DbModels, TokenExpiry } from "../utils/enum.util";
 
 const TokenSchema = new mongoose.Schema<IToken>({
   user: [{ type: Schema.Types.ObjectId, required: true, ref: DbModels.USER }],
   token: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, expires: "30d" },
+  expiry: { 
+    type: String, 
+    enum: Object.values(TokenExpiry), 
+    default: TokenExpiry.SHORT_TERM, 
+    required: true 
+},
+  createdAt: { type: Date, default: Date.now },
 },
 {
   timestamps: true,

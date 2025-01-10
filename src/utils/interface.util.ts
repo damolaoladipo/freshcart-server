@@ -85,6 +85,7 @@ export interface IAddress {
 export interface IToken extends Document {
     user: ObjectId;
     token: string;
+    expiry: string
     createdAt: Date;
     removeToken: () => void;
 

@@ -115,3 +115,12 @@ export enum Carriers {
     SF_EXPRESS = "SF Express",
     JNE = "JNE"
 }
+
+export enum TokenExpiry {
+    SHORT_TERM = "15m",   
+    SHORT_TERM_24H = "24h",  
+    MEDIUM_TERM = "7d",      
+    LONG_TERM = "30d",     
+    VERY_LONG_TERM = "90d", 
+    PERMANENT = "never"     
+}
