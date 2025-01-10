@@ -201,6 +201,34 @@ export const checkout = asyncHandler(
 );
 
 
+/**
+ * @name clearCart
+ * @description Clears all products and coupons from the cart
+ * @route DELETE /cart/:userId
+ * @access Private
+ */
+export const clearCart = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.userId;
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return next(new ErrorResponse("Cart not found", 404, []));
+    }
+
+    cart.products = [];
+    cart.coupon = null;
+    await cart.save();
+
+    res.status(200).json({
+      error: false,
+      message: "Cart cleared successfully.",
+      data: cart,
+    });
+  }
+);
+
 
 
 
