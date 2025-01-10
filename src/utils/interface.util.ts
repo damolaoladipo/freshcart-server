@@ -248,7 +248,7 @@ export interface IPaymentPartnerDoc extends Document {
 
 export interface IWishlistDoc extends Document {
   user: ObjectId;
-  products: Array<{ productId: ObjectId, quantity: number }>;
+  products: Array<IProductDoc>;
 
   addProduct: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
   removeProduct: (productId: string) => Promise<IWishlistDoc>;
