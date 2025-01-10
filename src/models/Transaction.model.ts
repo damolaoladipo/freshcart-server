@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { ITransactionDoc } from "../utils/interface.util";
-import { DbModels } from "../utils/enum.util";
+import { Currency, DbModels, PaymentPartners, PaymentStatus } from "../utils/enum.util";
 
 const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
   {
@@ -8,9 +8,12 @@ const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
     amount: { type: Number, required: true },
     method: { type: String, required: true },
-    currency: { type: String, required: true },
-    paymentPartner: { type: String, required: true },
-    status: { type: String, required: true },
+    currency: { type: String, enum: Currency, 
+      default: Currency.NGN, required: true },
+    paymentPartner: { type: String, enum: PaymentPartners, 
+      default: PaymentPartners.PAYSTACK, required: true },
+    status: { type: String, enum: PaymentStatus, 
+      default:PaymentStatus.PENDING, required: true },
     date: { type: Date, default: Date.now },
   },
   {
