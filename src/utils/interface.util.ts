@@ -296,3 +296,8 @@ export interface IDoc extends Document {
   _id: ObjectId;
   id: ObjectId;
 }
+
+export interface ITokenPayload {
+  userId: string;
+  exp: number;
+}

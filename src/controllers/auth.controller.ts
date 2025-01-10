@@ -8,8 +8,9 @@ import userService from "../services/user.service";
 import { RegisterDTO } from "../dtos/auth.dto";
 import { UserType } from "../utils/enum.util";
 import { generateRandomChars } from "../utils/helper.util";
-import { checkSessionTokenInDb } from "../utils/session.util";
 import Token from "../models/Token.model";
+import tokenService from "../services/token.service";
+import emailService from "../services/email.service";
 
 /**
  * @name register
@@ -254,81 +255,43 @@ export const logout = asyncHandler(
  * @route POST /auth/forgot-password
  * @access  Public
  */
-// export const forgotPassword = asyncHandler(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const { email } = req.body;
-
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return next(new ErrorResponse("User not found", 404, []));
-//     }
-
-//     const resetToken = createSessionToken(req, res, next);
-//     const expirationTime = new Date(Date.now() + 15 * 60 * 1000);
-
-//     user.resetPasswordToken = resetToken;
-//     user.resetPasswordTokenExpire = expirationTime;
-//     await user.save();
-
-//     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
-
-//     const message = {
-//       to: user.email,
-//       from: process.env.EMAIL_SENDER as string,
-//       subject: "Password Reset Request",
-//       html: `<p>You requested a password reset. Click <a href="${resetUrl}">here</a> to reset your password. This link is valid for 15 minutes.</p>`,
-//     };
-
-//     // await sgMail.send(message);
-
-//     res.status(200).json({
-//       error: false,
-//       errors: [],
-//       data: {},
-//       message: "Password reset link sent to email",
-//       status: 200,
-//     });
-//   }
-// );
-
-/**
- * @name resetPassword
- * @description Allows user reset their password using link provided via the forgot-password route
- * @route POST /auth/reset-password
- * @access  Public
- */
-export const resetPassword = asyncHandler(
+export const forgotPassword = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { token, id } = req.query;
-    const { newPassword } = req.body;
+    const { email } = req.body;
 
-    const checkToken = await checkSessionTokenInDb(token as string);
-
-    const user = await User.findOne({
-      _id: id,
-      resetPasswordToken: checkToken,
-      resetPasswordTokenExpire: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return next(
-        new ErrorResponse("Invalid or expired password reset token", 404, [])
-      );
+    if (!emailService.validateEmail(email)) {
+      return next(new ErrorResponse("Invalid email format.", 400, []));
     }
 
-    user.password = newPassword;
-    user.TokenExpire = new Date();
-    await user.save();
+    const user = await User.findOne({ email });
+    if (!user) {
+      return next(new ErrorResponse("User with this email does not exist.", 404, []));
+    }
+
+    const resetToken = tokenService.generateToken(
+      { userId: user._id, type: 'forgotPassword' }, 
+      process.env.TOKEN_SECRET as string, 900
+    ); 
+
+    await Token.create({ userId: user._id, token: resetToken });
+
+    const resetUrl = `${process.env.CLIENT_URL}/forgot-password?token=${resetToken}&id=${user._id}`;
+
+    const emailResult = await emailService.sendPasswordForgotEmail(user.email, resetUrl);
+    if (emailResult.error) {
+      return next(new ErrorResponse(emailResult.message, emailResult.code, []));
+    }
 
     res.status(200).json({
       error: false,
       errors: [],
       data: {},
-      message: "Password reset successfully",
+      message: "Forgot Password link sent to your email",
       status: 200,
     });
   }
 );
+
 
 /**
  * @name changePassword
