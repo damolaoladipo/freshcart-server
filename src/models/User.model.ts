@@ -3,7 +3,7 @@ import { IUserDoc } from "../utils/interface.util";
 import slugify from "slugify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { DbModels } from "../utils/enum.util";
+import { DbModels, UserType } from "../utils/enum.util";
 import { config } from "dotenv";
 
 
@@ -29,7 +29,7 @@ const UserSchema = new Schema(
     isSuper: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     isMerchant: { type: Boolean, default: false },
-    isUser: { type: Boolean, default: false },
+    isUser: { type: Boolean, default: UserType.USER, required: true },
     isActive: { type: Boolean, default: true },
 
     role: { type: Schema.Types.ObjectId, ref: DbModels.ROLE },
