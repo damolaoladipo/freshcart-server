@@ -6,7 +6,8 @@ import {
   removeFromCart,
   applyCoupon,
   checkout, 
-  updateProductQuantity
+  updateProductQuantity,
+  clearCart
 } from "../../controllers/cart.Controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
@@ -19,5 +20,6 @@ cartRouter.put("/userId/update", checkAuth, updateProductQuantity)
 cartRouter.put("/:userId/remove", checkAuth, removeFromCart);
 cartRouter.put("/:userId/coupon", checkAuth, applyCoupon);
 cartRouter.put("/:userId/checkout", checkAuth, checkout);
+cartRouter.delete("/userId/clear", checkAuth, clearCart)
 
 export default cartRouter;
