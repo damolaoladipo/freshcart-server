@@ -46,3 +46,29 @@ export enum OrderStatus {
     CANCELLED = "cancelled",
     RETURNED = "returned"
 }
+
+export enum ShippingStatus {
+    PENDING = "pending", 
+    IN_TRANSIT = "in_transit", 
+    DELIVERED = "delivered",
+    CANCELLED = "cancelled", 
+    RETURNED = "returned"
+}
+
+export enum PaymentStatus {
+    PENDING = "pending", 
+    COMPLETED = "completed", 
+    FAILED = "failed", 
+    REFUNDED = "refunded", 
+    PARTIAL = "partial",
+    CANCELLED = "cancelled" 
+}
+
+export enum NotificationStatus {
+    SENT = "sent", 
+    DELIVERED = "delivered", 
+    READ = "read",
+    UNREAD = "unread",
+    FAILED = "failed", 
+    PENDING = "pending" 
+}

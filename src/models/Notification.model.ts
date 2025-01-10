@@ -1,12 +1,13 @@
 import mongoose, { Schema, Types, Model } from "mongoose";
 import { INotificationDoc } from "../utils/interface.util";
-import { DbModels, UserType } from "../utils/enum.util";
+import { DbModels, NotificationStatus, UserType } from "../utils/enum.util";
 
 const NotificationSchema = new mongoose.Schema<INotificationDoc>(
   {
     user: { type: Schema.Types.ObjectId, ref: DbModels.USER, required: true },
     message: { type: String, required: true },
-    status: { type: String, default: "unread" },
+    status: { type: String, enum: Object.values(NotificationStatus),
+      default: NotificationStatus.PENDING },
   },
   {
     timestamps: true,
