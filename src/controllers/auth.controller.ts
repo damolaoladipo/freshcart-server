@@ -292,7 +292,6 @@ export const forgotPassword = asyncHandler(
   }
 );
 
-
 /**
  * @name changePassword
  * @description Allows user to change their password using their old password
@@ -304,14 +303,12 @@ export const changePassword = asyncHandler(
     const { oldPassword, newPassword } = req.body;
     const userId = req.user.id;
 
-    // Find the user by ID
     const user = await User.findById(userId);
 
     if (!user) {
       return next(new ErrorResponse("User not found", 404, []));
     }
 
-    // Check if the old password matches the stored password
     const isMatch = await user.matchPassword(oldPassword);
     if (!isMatch) {
       return next(new ErrorResponse("Old password is incorrect", 400, []));
@@ -327,7 +324,6 @@ export const changePassword = asyncHandler(
       );
     }
 
-    // Update the user's password and save
     user.password = newPassword;
     await user.save();
 

@@ -14,7 +14,7 @@ const authRouter = Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/logout", logout);
-authRouter.put("/forgotpassword", forgotPassword)
+authRouter.put("/forgot-password", forgotPassword)
 authRouter.put("/change-password", checkAuth, changePassword);
 
 
