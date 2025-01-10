@@ -100,3 +100,18 @@ export enum Merchants {
     WHOLESOME_MARKET = "Wholesome Market",
     PURELY_PLANT = "Purely Plant"
 }
+
+export enum Carriers {
+    FREE = "Free",
+    UPS = "UPS",
+    FEDEX = "FedEx",
+    DHL = "DHL",
+    USPS = "USPS",
+    AMAZON_CARRIER = "Amazon Carrier",
+    DHL_EXPRESS = "DHL Express",
+    CANADA_POST = "Canada Post",
+    ROYAL_MAIL = "Royal Mail",
+    AUSTRALIA_POST = "Australia Post",
+    SF_EXPRESS = "SF Express",
+    JNE = "JNE"
+}

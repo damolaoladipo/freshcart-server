@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IShipmentDoc } from "../utils/interface.util";
-import { DbModels, ShippingStatus} from "../utils/enum.util";
+import { Carriers, DbModels, ShippingStatus} from "../utils/enum.util";
 
 const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
   {
@@ -9,9 +9,8 @@ const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
     address: { type: String, ref: DbModels.ADDRESS,  required: true },
     trackingNumber: { type: String, required: true },
     status: { type: String, enum: ShippingStatus,  default: ShippingStatus.PENDING },
-
     shipmentDate: { type: Date, required: true },
-    carrier: { type: String, required: true },
+    carrier: { type: String, enum: Carriers , default: Carriers.FREE, required: true },
   },
   {
     timestamps: true,
