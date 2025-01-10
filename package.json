@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@btffamily/pacitude": "^1.0.17",
+    "@paystack/inline-js": "^2.22.1",
     "@sendgrid/mail": "^8.1.4",
     "@types/app-root-path": "^1.2.8",
     "@types/bcrypt": "^5.0.2",

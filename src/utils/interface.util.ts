@@ -24,7 +24,7 @@ export interface IRoleDoc extends Document {
 export interface IUserDoc extends Document {
     firstName: string;
     lastName: string;
-    email: string;
+    email: string
     password: string;
     
     username: string;
@@ -152,7 +152,7 @@ export interface ICartDoc extends Document {
 }
 
 export interface IOrderDoc extends Document {
-  user: ObjectId;
+  user: ObjectId | IUserDoc;
   address: IAddress
   orderDate: Date;
   status: string;
@@ -309,4 +309,16 @@ export interface IDoc extends Document {
 export interface ITokenPayload {
   userId: string;
   exp: number;
+}
+
+export interface IPaymentGateway {
+  initializePayment(paymentData: {
+    email: string;
+    amount: number;
+    currency: string
+    reference: string;
+    callback_url: string;
+  }): Promise<any>;
+
+  verifyPayment(reference: string): Promise<any>;
 }

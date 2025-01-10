@@ -4,6 +4,7 @@ import Transaction from '../models/Transaction.model';
 import PaymentGateway from '../models/PaymentPartner.model';
 import { IResult } from '../utils/interface.util';
 
+
 class PaymentService {
   constructor() {}
 

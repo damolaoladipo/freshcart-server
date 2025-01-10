@@ -6,7 +6,9 @@ import Product from "../models/Product.model";
 import Cart from "../models/Cart.model";
 import Shipment from "../models/Shipment.model";
 import Address from "../models/Address.model";
-import Transaction from "../models/Transaction.model";
+import OrderItem from "../models/OrderItem.model";
+
+
 
 /**
  * @name createOrder
@@ -16,10 +18,10 @@ import Transaction from "../models/Transaction.model";
  */
 export const createOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, address, orderItems, totalAmount, payment, shipment } = req.body;
+    const { userId, address, orderItems, totalAmount, shipment } = req.body;
     
     const cart = await Cart.findOne({ user: userId });
-    if (!cart || cart.products.length === 0) {
+    if (!cart || cart.products.length === 0) {``
       return next(new ErrorResponse("Cart is empty or not found", 400, []));  
     }
    
@@ -31,11 +33,6 @@ export const createOrder = asyncHandler(
     const shipmentMethod = await Shipment.findById(shipment);
     if (!shipmentMethod) {
     return next(new ErrorResponse("Invalid shipment method.", 400, []));
-    }
-
-    const paymentDetails = await Transaction.findOne({ id: payment, user: userId });
-    if (!paymentDetails || !paymentDetails.isSuccessful) {
-    return next(new ErrorResponse("Payment not processed or invalid.", 400, []));
     }
 
     const productUpdates = [];
@@ -55,7 +52,6 @@ export const createOrder = asyncHandler(
       address,
       orderItems,
       totalAmount,
-      payment,
       shipment,
     });
     await order.save()
@@ -63,6 +59,11 @@ export const createOrder = asyncHandler(
     // Step 7: Create order items and associate them with the order
     const orderItemPromises = cart.products.map(async (product) => {
       const productDetails = await Product.findById(product.productId);
+
+      if (!productDetails) {
+        throw new Error(`Product with ID ${product.productId} not found`);
+      }
+
       const   orderItem = new OrderItem({
         order: order._id,
         product: product.productId,
@@ -83,15 +84,11 @@ export const createOrder = asyncHandler(
 
     res.status(201).json({
       error: false,
-      message: "Order placed successfully.",
-      data: order,
+      message: "Order placed successfully. Proceed to payment.",
+      data: {order}
     });
   }
 );
-
-
-
-
 
 
 /**

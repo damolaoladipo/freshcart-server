@@ -2,9 +2,10 @@ import mongoose, { Schema, Model } from "mongoose";
 import { IOrderDoc } from "../utils/interface.util";
 import { DbModels, OrderStatus } from "../utils/enum.util";
 
+
 const OrderSchema = new mongoose.Schema<IOrderDoc>(
   {
-    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER, required: true }],
+    user: { type: Schema.Types.ObjectId, ref: DbModels.USER, required: true },
     address: [{ type: String,  ref: DbModels.ADDRESS, required: true }],
     orderItems: [{ type: Schema.Types.ObjectId, ref: DbModels.ORDERITEM, required: true }],
     payment: [{ type: Schema.Types.ObjectId, ref: DbModels.TRANSACTION, required: true }],

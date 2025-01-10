@@ -95,6 +95,7 @@ class CheckoutService {
       return result;
   }
 
+  
   /**
    * @name confirmOrder
    * @param req - The request object

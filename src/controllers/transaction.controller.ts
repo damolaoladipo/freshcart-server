@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import Transaction from "../models/Transaction.model";
+import { PaymentGatewayFactory } from "../services/payment/paymentfactory.service";
+import Order from "../models/Order.model";
+import { IUserDoc } from "../utils/interface.util";
+
+
 
 /**
  * @name createTransaction
@@ -11,15 +16,34 @@ import Transaction from "../models/Transaction.model";
  */
 export const createTransaction = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { orderId, amount, method, currency, paymentPartner } = req.body;
+    const { orderId, amount, currency, paymentProvider, callback_url } = req.body;
+
+    const order = await Order.findById(orderId).populate<{ user: IUserDoc }>('user')
+    if (!order || !order.user) {
+      return next(new ErrorResponse("Order or user not found", 404, []));
+    }
+
+    const reference = `txn_${Date.now()}`;
+    const paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
+
+    const paymentInit = await paymentGateway.initializePayment({
+      email: order.user.email, 
+      amount: amount * 100,
+      currency,
+      reference,
+      callback_url,
+    });
 
     const transaction = new Transaction({
       order: orderId,
       amount,
-      method,
+      method: paymentProvider,
       currency,
-      paymentPartner,
-    });
+      paymentReference: reference,
+      paymentPartner: paymentProvider,
+      status: "pending",
+      paymentUrl: paymentInit.data.authorization_url,
+    });;
 
     await transaction.processTransaction();
 
@@ -63,7 +87,7 @@ export const getTransaction = asyncHandler(
  */
 export const updateTransactionStatus = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { status } = req.body;
+    const { status, provider } = req.body;
     const transactionId = req.params.id;
 
     const transaction = await Transaction.findById(transactionId);
@@ -71,6 +95,15 @@ export const updateTransactionStatus = asyncHandler(
     if (!transaction) {
       return next(new ErrorResponse("Transaction not found", 404, []));
     }
+
+    const paymentGateway = PaymentGatewayFactory.createGateway(provider);
+    const verification = await paymentGateway.verifyPayment(transaction.id);
+    if (!verification.success) {
+      transaction.status = "failed";
+      await transaction.save();
+      return next(new ErrorResponse("Payment verification failed", 400, []));
+    }
+
 
     await transaction.updatePaymentStatus(status);
 
