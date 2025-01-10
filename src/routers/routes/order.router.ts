@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { 
-  createOrder, 
-  getOrder, 
-  updateOrderStatus, 
-  getUserOrders 
-} from "../../controllers/order.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
+import { 
+    createOrder, 
+    getOrder, 
+    getUserOrders, 
+    updateOrderStatus 
+} from "../../controllers/order.controller";
 
 const orderRouter = Router();
 

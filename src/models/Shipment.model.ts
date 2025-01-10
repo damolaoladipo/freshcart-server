@@ -4,7 +4,7 @@ import { Carriers, DbModels, ShippingStatus} from "../utils/enum.util";
 
 const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
   {
-    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
+    user: { type: Schema.Types.ObjectId, ref: DbModels.USER },
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
     address: { type: String, ref: DbModels.ADDRESS,  required: true },
     trackingNumber: { type: String, required: true },

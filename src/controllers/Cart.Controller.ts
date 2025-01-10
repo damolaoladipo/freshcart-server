@@ -30,25 +30,6 @@ export const createCart = asyncHandler(
       coupon: null, 
       checkout: false 
     });
-
-    if (cart.products.length === 0) {
-      return res.status(400).json({
-        error: true,
-        message: "Cart cannot be empty. Please add products before proceeding.",
-      });
-    }
-
-    const stockValidation = cart.products.map(async (product) => {
-      if (!product.productId || !product.quantity) {
-        throw new ErrorResponse(`Product details are incomplete for one or more products in the cart.`, 400, []);
-      }
-      
-      const productDetails = await Product.findById(product.productId);
-      if (!productDetails || productDetails.stockQuantity < product.quantity) {
-        throw new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []);
-      }
-    });
-    await Promise.all(stockValidation)
     
     await cart.save();
 
@@ -69,7 +50,10 @@ export const createCart = asyncHandler(
 export const getCart = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
-    const cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: "products.id", 
+      model: "Product", 
+    });
 
     if (!cart) {
       return next(new ErrorResponse("Cart not found", 404, []));
@@ -203,18 +187,46 @@ export const checkout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.userId;
 
-    const cart = await Cart.findOne({ user: userId });
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: "products.id", 
+      model: "Product", 
+    });
 
     if (!cart) {
       return next(new ErrorResponse("Cart not found", 404, []));
     }
+
+    if (cart.products.length === 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Cart cannot be empty. Please add products before proceeding.",
+      });
+    }
+
+    let totalPrice = 0;
+    const stockValidation = cart.products.map(async (product) => {
+      if (!product.productId || !product.quantity) {
+        throw new ErrorResponse(`Product details are incomplete for one or more products in the cart.`, 400, []);
+      }
+      
+      const productDetails = await Product.findById(product.productId);
+      if (!productDetails || productDetails.stockQuantity < product.quantity) {
+        throw new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []);
+      }
+
+      const productPrice = productDetails.price;
+      const productDiscount = productDetails.discount || 0;
+      const finalPrice = productPrice - (productPrice * productDiscount) / 100;
+      totalPrice += finalPrice * product.quantity;
+    });
+    await Promise.all(stockValidation)
 
     await cart.proceedToCheckout();
 
     res.status(200).json({
       error: false,
       message: "Checkout successful.",
-      data: cart,
+      data: {cart, totalPrice}
     });
   }
 );

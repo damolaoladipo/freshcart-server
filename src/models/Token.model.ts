@@ -3,7 +3,7 @@ import { IToken } from "../utils/interface.util";
 import { DbModels, TokenExpiry } from "../utils/enum.util";
 
 const TokenSchema = new mongoose.Schema<IToken>({
-  user: [{ type: Schema.Types.ObjectId, required: true, ref: DbModels.USER }],
+  user: { type: Schema.Types.ObjectId, required: true, ref: DbModels.USER },
   token: { type: String, required: true },
   expiry: { 
     type: String, 

@@ -4,7 +4,7 @@ import { Currency, DbModels, PaymentPartners, PaymentStatus } from "../utils/enu
 
 const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
   {
-    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
+    user: { type: Schema.Types.ObjectId, ref: DbModels.USER },
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
     amount: { type: Number, required: true },
     method: { type: String, required: true },

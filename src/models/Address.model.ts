@@ -4,7 +4,7 @@ import { IAddress } from "../utils/interface.util";
 
 const AddressSchema = new Schema<IAddress>(
   {
-    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
+    user: { type: Schema.Types.ObjectId, ref: DbModels.USER },
     street: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
