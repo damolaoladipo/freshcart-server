@@ -76,6 +76,23 @@ class AuthService {
       result.error = true;
       result.message = "password is required";
       result.code = 400;
+    }     else if (!userService.checkEmail(email)) {
+      result.error = true;
+      result.message = "invalid email supplied";
+      result.code = 400;
+    } else if (!userService.checkPassword(password)) {
+      result.error = true;
+      result.message =
+        "password must contain, 1 uppercase letter, one special character, one number and must be greater than 8 characters";
+      result.code = 400;
+    } else if (!firstName || !firstName?.trim()) {
+      result.error = true;
+      result.message = "First name is a required field";
+      result.code = 400;
+    } else if (!lastName || !lastName?.trim()) {
+      result.error = true;
+      result.message = "Last name is a required field";
+      result.code = 400;
     } 
   
     else {
@@ -99,23 +116,4 @@ class AuthService {
 
 export default new AuthService();
 
-    
-    // else if (!userService.checkEmail(email)) {
-    //   result.error = true;
-    //   result.message = "invalid email supplied";
-    //   result.code = 400;
-    // } else if (!userService.checkPassword(password)) {
-    //   result.error = true;
-    //   result.message =
-    //     "password must contain, 1 uppercase letter, one special character, one number and must be greater than 8 characters";
-    //   result.code = 400;
-    // } else if (!firstName || !firstName?.trim()) {
-    //   result.error = true;
-    //   result.message = "First name is a required field";
-    //   result.code = 400;
-    // } else if (!lastName || !lastName?.trim()) {
-    //   result.error = true;
-    //   result.message = "Last name is a required field";
-    //   result.code = 400;
-    // } 
     
