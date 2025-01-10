@@ -1,6 +1,6 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IOrderItemDoc } from "../utils/interface.util";
-import { DbModels } from "../utils/enum.util";
+import { DbModels, OrderStatus } from "../utils/enum.util";
 
 const OrderItemSchema = new mongoose.Schema<IOrderItemDoc>(
   {
@@ -10,7 +10,7 @@ const OrderItemSchema = new mongoose.Schema<IOrderItemDoc>(
     pricePerUnit: { type: Number, required: true },
     totalPrice: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
-    status: { type: String, enum: ["Pending", "Processing", "Shipped", "Delivered"], default: "Pending" },
+    status: { type: String, enum: Object.values(OrderStatus), default: OrderStatus.PENDING },
   },
   {
     timestamps: true,
