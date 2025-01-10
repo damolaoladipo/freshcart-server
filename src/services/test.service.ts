@@ -373,3 +373,41 @@ export const createOrder = async (orderData) => {
 export const handlePaymentCallback = async (webhookData) => {
   return await PaymentService.handleWebhook(webhookData);
 };
+export const createOrderItem = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { orderId, productId, quantity, pricePerUnit, discount } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return next(new ErrorResponse("Product not found", 404, []));
+    }
+
+    if (product.stockQuantity < quantity) {
+      return next(
+        new ErrorResponse("Insufficient stock for the requested product", 400, [])
+      );
+    }
+
+    
+
+
+    const orderItem = new OrderItem({
+      order: orderId,
+      product: productId,
+      quantity,
+      pricePerUnit,
+      discount,
+    });
+
+    await orderItem.save();
+    product.stockQuantity -= quantity;
+    
+    await product.save();
+
+    res.status(201).json({
+      error: false,
+      message: "Order item created successfully.",
+      data: orderItem,
+    });
+  }
+);

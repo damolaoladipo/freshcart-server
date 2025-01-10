@@ -5,6 +5,7 @@ import Transaction from "../models/Transaction.model";
 import { PaymentGatewayFactory } from "../services/payment/paymentfactory.service";
 import Order from "../models/Order.model";
 import { IUserDoc } from "../utils/interface.util";
+import { PaymentStatus } from "../utils/enum.util";
 
 
 
@@ -41,7 +42,7 @@ export const createTransaction = asyncHandler(
       currency,
       paymentReference: reference,
       paymentPartner: paymentProvider,
-      status: "pending",
+      status: PaymentStatus.PENDING,
       paymentUrl: paymentInit.data.authorization_url,
     });;
 

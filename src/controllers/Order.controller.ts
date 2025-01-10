@@ -35,18 +35,6 @@ export const createOrder = asyncHandler(
     return next(new ErrorResponse("Invalid shipment method.", 400, []));
     }
 
-    const productUpdates = [];
-    for (const product of cart.products) {
-      const productDetails = await Product.findById(product.productId);
-      if (!productDetails || productDetails.stockQuantity < product.quantity) {
-        return next(new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []));
-      }
-      productDetails.stockQuantity -= product.quantity;
-      productUpdates.push(productDetails.save())
-    }
-    
-    await Promise.all(productUpdates)
-
     const order = new Order({
       user: userId,
       address,
@@ -55,25 +43,6 @@ export const createOrder = asyncHandler(
       shipment,
     });
     await order.save()
-
-    // Step 7: Create order items and associate them with the order
-    const orderItemPromises = cart.products.map(async (product) => {
-      const productDetails = await Product.findById(product.productId);
-
-      if (!productDetails) {
-        throw new Error(`Product with ID ${product.productId} not found`);
-      }
-
-      const   orderItem = new OrderItem({
-        order: order._id,
-        product: product.productId,
-        quantity: product.quantity,
-        pricePerUnit: productDetails.price,
-      });
-      return orderItem.save();
-    });
-
-    await Promise.all(orderItemPromises);
     
 
     cart.products = [];

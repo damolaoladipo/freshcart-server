@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import Cart from "../models/Cart.model";
 import ErrorResponse from "../utils/error.util";
+import Product from "../models/Product.model";
 
 /**
  * @name createCart
@@ -21,7 +22,6 @@ export const createCart = asyncHandler(
         message: "An active cart already exists for this user.",
         data: existingCart,
       });
-
     }
 
     const cart = new Cart({ 
@@ -31,6 +31,25 @@ export const createCart = asyncHandler(
       checkout: false 
     });
 
+    if (cart.products.length === 0) {
+      return res.status(400).json({
+        error: true,
+        message: "Cart cannot be empty. Please add products before proceeding.",
+      });
+    }
+
+    const stockValidation = cart.products.map(async (product) => {
+      if (!product.productId || !product.quantity) {
+        throw new ErrorResponse(`Product details are incomplete for one or more products in the cart.`, 400, []);
+      }
+      
+      const productDetails = await Product.findById(product.productId);
+      if (!productDetails || productDetails.stockQuantity < product.quantity) {
+        throw new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []);
+      }
+    });
+    await Promise.all(stockValidation)
+    
     await cart.save();
 
     res.status(201).json({

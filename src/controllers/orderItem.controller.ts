@@ -34,8 +34,8 @@ export const createOrderItem = asyncHandler(
     });
 
     await orderItem.save();
-
     product.stockQuantity -= quantity;
+    
     await product.save();
 
     res.status(201).json({
