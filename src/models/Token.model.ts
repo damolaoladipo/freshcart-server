@@ -1,10 +1,10 @@
-import mongoose, { model, Model } from "mongoose";
+import mongoose, { model, Model, Schema } from "mongoose";
 import { IToken } from "../utils/interface.util";
 import { DbModels } from "../utils/enum.util";
 
 const TokenSchema = new mongoose.Schema<IToken>({
+  user: [{ type: Schema.Types.ObjectId, required: true, ref: DbModels.USER }],
   token: { type: String, required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: DbModels.USER},
   createdAt: { type: Date, default: Date.now, expires: "30d" },
 },
 {

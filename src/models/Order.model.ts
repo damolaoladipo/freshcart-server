@@ -4,35 +4,15 @@ import { DbModels } from "../utils/enum.util";
 
 const OrderSchema = new mongoose.Schema<IOrderDoc>(
   {
-    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
-    address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      postalCode: { type: String, required: true },
-      country: { type: String, required: true },
-    },
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER, required: true }],
+    address: [{ type: String,  ref: DbModels.ADDRESS, required: true }],
+    orderItems: [{ type: Schema.Types.ObjectId, ref: DbModels.ORDERITEM, required: true }],
+    payment: [{ type: Schema.Types.ObjectId, ref: DbModels.TRANSACTION, required: true }],
+    shipment: [{ type: Schema.Types.ObjectId, ref: DbModels.SHIPMENT, required: true }],
     orderDate: { type: Date, default: Date.now },
     status: { type: String, default: "pending" },
     totalAmount: { type: Number, required: true },
-    
-    orderItems: [
-      {
-        productId: { type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true },
-        quantity: { type: Number, required: true },
-      },
-    ],
-    payment: {
-      method: { type: String, required: true },
-      status: { type: String, required: true },
-      transactionId: { type: String, ref: DbModels.TRANSACTION, required: true },
-    },
-    shipment: {
-      carrier: { type: String, required: true },
-      trackingNumber: { type: String, required: true },
-      status: { type: String, required: true },
-      shipmentDate: { type: String, required: true },
-    },
+
   },
   {
     timestamps: true,

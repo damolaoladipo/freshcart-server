@@ -1,16 +1,16 @@
 import mongoose, { Schema, Model } from "mongoose";
 import { IShipmentDoc } from "../utils/interface.util";
 import { DbModels} from "../utils/enum.util";
-import AddressSchema from "./Address.model";
 
 const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
   {
     user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
-    address: { type: Schema.Types.ObjectId, ref: DbModels.ADDRESS,  required: true },
+    address: { type: String, ref: DbModels.ADDRESS,  required: true },
     trackingNumber: { type: String, required: true },
     status: { type: String, default: "Pending" },
     shipmentDate: { type: Date, required: true },
+    carrier: { type: String, required: true },
   },
   {
     timestamps: true,

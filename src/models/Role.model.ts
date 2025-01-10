@@ -5,6 +5,7 @@ import { DbModels, UserType } from "../utils/enum.util";
 
 const RolesSchema = new mongoose.Schema<IRoleDoc>(
   {
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     name: { type: String, default: UserType.USER, enum: UserType, required: true },
     description: { type: String, maxLength: 200, default: "" },
     slug: { type: String, default: "" },

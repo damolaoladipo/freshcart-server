@@ -29,7 +29,6 @@ const UserSchema = new Schema(
     isSuper: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     isMerchant: { type: Boolean, default: false },
-    IsGuest: { type: Boolean, default: false },
     isUser: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
 

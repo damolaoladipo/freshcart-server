@@ -2,6 +2,7 @@ import { Document, Model, ObjectId } from "mongoose";
 
 export type Nullable<T> = T | null;
 export interface IRoleDoc extends Document {
+  user: ObjectId
   name: string;
   description: string;
   slug: string;
@@ -82,10 +83,15 @@ export interface IAddress {
   }
   
 export interface IToken extends Document {
+    user: ObjectId;
     token: string;
-    userId: ObjectId;
     createdAt: Date;
     removeToken: () => void;
+
+    updatedAt: string;
+    _version: number;
+    _id: ObjectId;
+    id: ObjectId;
   }
 
 export interface IRandoChar {
@@ -259,6 +265,7 @@ export interface IWishlistDoc extends Document {
 export interface IShipmentDoc extends Document {
   user: ObjectId;
   order: ObjectId;
+  carrier: string
   address: IAddress
   trackingNumber: string;
   status: string;
@@ -291,8 +298,6 @@ export interface INotificationDoc extends Document {
 
 
 export interface IDoc extends Document {
- 
-
   createdAt: string;
   updatedAt: string;
   _version: number;

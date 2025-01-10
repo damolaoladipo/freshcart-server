@@ -37,3 +37,12 @@ export enum DbModels {
     NOTIFICATION = "Notification",
     WISHLIST = "Wishlist"
 }
+
+export enum OrderStatus {
+    PENDING = "pending",
+    PROCESSING = "processing",
+    SHIPPED = "shipped",
+    DELIVERED = "delivered",
+    CANCELLED = "cancelled",
+    RETURNED = "returned"
+}
