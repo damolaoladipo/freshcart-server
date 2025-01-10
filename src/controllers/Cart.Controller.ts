@@ -64,6 +64,55 @@ export const getCart = asyncHandler(
   }
 );
 
+
+/**
+ * @name updateProductQuantity
+ * @description Updates the quantity of a specific product in the cart
+ * @route PUT /cart/:userId/update
+ * @access Private
+ */
+export const updateProductQuantity = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.userId;
+    const { productId, quantity } = req.body;
+
+    if (!productId || quantity == null) {
+      return res.status(400).json({
+        error: true,
+        message: "Product ID and quantity are required.",
+      });
+    }
+
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return next(new ErrorResponse("Cart not found", 404, []));
+    }
+
+    const productIndex = cart.products.findIndex(
+      (item) => item.productId.toString() === productId
+    );
+
+    if (productIndex === -1) {
+      return next(new ErrorResponse("Product not found in cart.", 404, []));
+    }
+
+    if (quantity <= 0) {
+      cart.products.splice(productIndex, 1); 
+    } else {
+      cart.products[productIndex].quantity = quantity; 
+    }
+
+    await cart.save();
+
+    res.status(200).json({
+      error: false,
+      message: "Product quantity updated in cart.",
+      data: cart,
+    });
+  }
+);
+
 /**
  * @name addToCart
  * @description Adds a product to the cart
@@ -150,6 +199,8 @@ export const checkout = asyncHandler(
     });
   }
 );
+
+
 
 
 
