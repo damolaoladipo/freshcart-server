@@ -10,7 +10,9 @@ const RolesSchema = new mongoose.Schema<IRoleDoc>(
     description: { type: String, maxLength: 200, default: "" },
     slug: { type: String, default: "" },
     users: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
-    
+    permissions: [{ type: String, enum: Object.values(Permissions), 
+      default: Permissions.VIEW_PRODUCTS, }],
+  },
   {
     timestamps: true,
     versionKey: "_version",
