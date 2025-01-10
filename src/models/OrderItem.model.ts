@@ -18,6 +18,7 @@ const OrderItemSchema = new mongoose.Schema<IOrderItemDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

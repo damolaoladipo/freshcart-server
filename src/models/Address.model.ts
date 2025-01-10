@@ -4,6 +4,7 @@ import { IAddress } from "../utils/interface.util";
 
 const AddressSchema = new Schema<IAddress>(
   {
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     street: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
@@ -11,12 +12,12 @@ const AddressSchema = new Schema<IAddress>(
     country: { type: String, required: true },
   },
   {
-    // _id: true,
     timestamps: true,
     versionKey: "_version",
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

@@ -18,6 +18,7 @@ const ShipmentSchema = new mongoose.Schema<IShipmentDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

@@ -5,8 +5,8 @@ import { DbModels } from "../utils/enum.util";
 
 const PaymentPartnerSchema = new mongoose.Schema<IPaymentPartnerDoc>(
   {
-    name: { type: String, required: true, unique: true, },
-    apiKey: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
+    apiKey: { type: String, required: true, unique: true },
     apiSecret: { type: String, required: true },
     webhookUrl: { type: String, required: true },
     supportedCurrencies: { type: [String], required: true, validate: (value: string[]) => value.length > 0 },
@@ -20,6 +20,7 @@ const PaymentPartnerSchema = new mongoose.Schema<IPaymentPartnerDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

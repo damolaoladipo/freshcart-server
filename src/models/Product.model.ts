@@ -26,6 +26,7 @@ const ProductSchema = new mongoose.Schema<IProductDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

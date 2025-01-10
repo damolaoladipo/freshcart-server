@@ -17,6 +17,7 @@ const RolesSchema = new mongoose.Schema<IRoleDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

@@ -14,6 +14,7 @@ const NotificationSchema = new mongoose.Schema<INotificationDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

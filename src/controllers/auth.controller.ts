@@ -265,7 +265,7 @@ export const forgotPassword = asyncHandler(
 
     const user = await User.findOne({ email });
     if (!user) {
-      return next(new ErrorResponse("User with this email does not exist.", 404, []));
+      return next(new ErrorResponse("Error", 404, ["User with this email does not exist"]));
     }
 
     const resetToken = tokenService.generateToken(
@@ -279,7 +279,7 @@ export const forgotPassword = asyncHandler(
 
     const emailResult = await emailService.sendPasswordForgotEmail(user.email, resetUrl);
     if (emailResult.error) {
-      return next(new ErrorResponse(emailResult.message, emailResult.code, []));
+      return next(new ErrorResponse("Error", emailResult.code, [emailResult.message]));
     }
 
     res.status(200).json({

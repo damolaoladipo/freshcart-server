@@ -1,4 +1,4 @@
-import { config } from "dotenv";
+import dotenv, { config, } from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import { ENVType } from "../utils/enum.util";
 import ENV from "../utils/env.util";
@@ -19,7 +19,7 @@ import v1Routes from "../routers/routes.router";
 
 
 
-config();
+dotenv.config();
 
 
 const app = express();

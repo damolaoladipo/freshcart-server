@@ -25,6 +25,7 @@ const CartSchema = new mongoose.Schema<ICartDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

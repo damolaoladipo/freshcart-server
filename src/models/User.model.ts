@@ -4,7 +4,10 @@ import slugify from "slugify";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { DbModels } from "../utils/enum.util";
-import Address from "./Address.model";
+import { config } from "dotenv";
+
+
+config()
 
 const UserSchema = new Schema(
   {
@@ -39,6 +42,7 @@ const UserSchema = new Schema(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }
@@ -66,13 +70,16 @@ UserSchema.methods.matchPassword = async function (password: string) {
 
 UserSchema.methods.getAuthToken = async function () {
 
+  const secret = process.env.JWT_SECRET as string
+  const expire = process.env.JWT_EXPIRY as string
+
+  
   let token: string = "";
 
-  if (!process.env.JWT_SECRET ) {
-    
+  if (!secret ) {
     throw new Error("JWT_SECRET is not defined.");
   }
-  if (!process.env.JWT_EXPIRY) {
+  if (!expire) {
     throw new Error("JWT_EXPIRY is not defined.");
   }
    token = await jwt.sign(
@@ -86,7 +93,7 @@ UserSchema.methods.getAuthToken = async function () {
       isUser: this.isUser,
       role: this.role,
     },
-    process.env.JWT_SECRET,
+    secret,
     {
       algorithm: "HS512",
       expiresIn: process.env.JWT_EXPIRY,
@@ -95,6 +102,37 @@ UserSchema.methods.getAuthToken = async function () {
 
   return token;
 };
+
+
+//   let token: string = "";
+
+//   if (!process.env.JWT_SECRET ) {
+    
+//     throw new Error("JWT_SECRET is not defined.");
+//   }
+//   if (!process.env.JWT_EXPIRY) {
+//     throw new Error("JWT_EXPIRY is not defined.");
+//   }
+//    token = await jwt.sign(
+//     {
+//       id: this._id,
+//       email: this.email,
+//       isSuper: this.isSuper,
+//       isAdmin: this.isAdmin,
+//       isMerchant: this.isMerchant,
+//       isGuest: this.IsGuest,
+//       isUser: this.isUser,
+//       role: this.role,
+//     },
+//     process.env.JWT_SECRET,
+//     {
+//       algorithm: "HS512",
+//       expiresIn: process.env.JWT_EXPIRY,
+//     }
+//   );
+
+//   return token;
+// };
 
 UserSchema.statics.getUsers = async () => {
   return await User.find({});

@@ -4,6 +4,7 @@ import { DbModels } from "../utils/enum.util";
 
 const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
   {
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     order: { type: Schema.Types.ObjectId, ref: DbModels.ORDER, required: true },
     amount: { type: Number, required: true },
     method: { type: String, required: true },
@@ -18,6 +19,7 @@ const TransactionSchema = new mongoose.Schema<ITransactionDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

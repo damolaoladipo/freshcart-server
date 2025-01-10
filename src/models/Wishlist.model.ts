@@ -4,7 +4,7 @@ import { DbModels } from "../utils/enum.util";
 
 const WishListSchema = new mongoose.Schema<IWishlistDoc>(
   {  
-    users: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     products: [
         {
           productId: { type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true },
@@ -18,6 +18,7 @@ const WishListSchema = new mongoose.Schema<IWishlistDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

@@ -4,7 +4,7 @@ import { DbModels } from "../utils/enum.util";
 
 const OrderSchema = new mongoose.Schema<IOrderDoc>(
   {
-    users: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
+    user: [{ type: Schema.Types.ObjectId, ref: DbModels.USER }],
     address: {
       street: { type: String, required: true },
       city: { type: String, required: true },
@@ -40,6 +40,7 @@ const OrderSchema = new mongoose.Schema<IOrderDoc>(
     toJSON: {
       transform(doc: any, ret) {
         ret.id = ret._id;
+        delete ret.__v;
       },
     },
   }

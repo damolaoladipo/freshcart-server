@@ -59,6 +59,7 @@ export interface IUserDoc extends Document {
 }
 
 export interface IAddress {
+    user: ObjectId
     street: string;
     city: string;
     state: string;
@@ -144,7 +145,7 @@ export interface ICartDoc extends Document {
 }
 
 export interface IOrderDoc extends Document {
-  users: ObjectId;
+  user: ObjectId;
   address: IAddress
   orderDate: Date;
   status: string;
@@ -175,6 +176,7 @@ export interface IOrderDoc extends Document {
 
 
 export interface IOrderItemDoc extends Document {
+  user: ObjectId
   product: ObjectId;
   order: ObjectId;
   quantity: number;
@@ -193,6 +195,7 @@ export interface IOrderItemDoc extends Document {
 }
 
 export interface ITransactionDoc extends Document {
+  user: ObjectId
   order: ObjectId;
   amount: number;
   method: string;
@@ -237,7 +240,7 @@ export interface IPaymentPartnerDoc extends Document {
 
 
 export interface IWishlistDoc extends Document {
-  users: ObjectId;
+  user: ObjectId;
   products: Array<{ productId: ObjectId, quantity: number }>;
 
   addProduct: (productId: ObjectId, quantity: number) => Promise<IWishlistDoc>;
