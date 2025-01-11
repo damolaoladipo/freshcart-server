@@ -3,6 +3,7 @@ import asyncHandler from "../middlewares/async.mdw";
 import Cart from "../models/Cart.model";
 import ErrorResponse from "../utils/error.util";
 import Product from "../models/Product.model";
+import { ICartDoc, IProductDoc } from "../utils/interface.util";
 
 /**
  * @name createCart
@@ -93,7 +94,7 @@ export const updateProductQuantity = asyncHandler(
     }
 
     const productIndex = cart.products.findIndex(
-      (item) => item.productId.toString() === productId
+      (item) => item.id.toString() === productId
     );
 
     if (productIndex === -1) {
@@ -103,7 +104,7 @@ export const updateProductQuantity = asyncHandler(
     if (quantity <= 0) {
       cart.products.splice(productIndex, 1); 
     } else {
-      cart.products[productIndex].quantity = quantity; 
+      cart.products[productIndex].stockQuantity = quantity; 
     }
 
     await cart.save();
@@ -185,12 +186,16 @@ export const removeFromCart = asyncHandler(
  */
 export const checkout = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.params.userId;
+    const { userId } = req.params
 
-    const cart = await Cart.findOne({ user: userId }).populate({
+    const cart = await Cart.findOne({ user: userId }).populate<{
+        products: { id: IProductDoc, quantity: number  }[];
+      }>({
       path: "products.id", 
       model: "Product", 
-    });
+    })
+
+    console.log("user cart", cart);
 
     if (!cart) {
       return next(new ErrorResponse("Cart not found", 404, []));
@@ -204,23 +209,29 @@ export const checkout = asyncHandler(
     }
 
     let totalPrice = 0;
-    const stockValidation = cart.products.map(async (product) => {
-      if (!product.productId || !product.quantity) {
-        throw new ErrorResponse(`Product details are incomplete for one or more products in the cart.`, 400, []);
+
+    for (const item of cart.products) {
+
+      const product = item.id as IProductDoc
+      const quantity = item.quantity
+
+      if (!product || !quantity) {
+        throw new ErrorResponse(
+          `Product details are incomplete for one or more products in the cart.`,
+           400, []);
       }
       
-      const productDetails = await Product.findById(product.productId);
-      if (!productDetails || productDetails.stockQuantity < product.quantity) {
-        throw new ErrorResponse(`Product ${product.productId} is out of stock.`, 400, []);
+      
+      if (product.stockQuantity < quantity) {
+        throw new ErrorResponse(`Product ${product} is out of stock.`, 400, []);
       }
 
-      const productPrice = productDetails.price;
-      const productDiscount = productDetails.discount || 0;
-      const finalPrice = productPrice - (productPrice * productDiscount) / 100;
-      totalPrice += finalPrice * product.quantity;
-    });
-    await Promise.all(stockValidation)
-
+      const productPrice = product.price;
+      const discount = product.discount || 0;
+      const finalPrice = productPrice - (productPrice * discount) / 100;
+      totalPrice += finalPrice * quantity;
+    }
+        
     await cart.proceedToCheckout();
 
     res.status(200).json({

@@ -7,6 +7,7 @@ import Cart from "../models/Cart.model";
 import Shipment from "../models/Shipment.model";
 import Address from "../models/Address.model";
 import OrderItem from "../models/OrderItem.model";
+import { Carriers } from "../utils/enum.util";
 
 
 
@@ -18,29 +19,35 @@ import OrderItem from "../models/OrderItem.model";
  */
 export const createOrder = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, address, orderItems, totalAmount, shipment } = req.body;
+    const { userId, address, cartItems, totalAmount, carrier } = req.body;
     
     const cart = await Cart.findOne({ user: userId });
     if (!cart || cart.products.length === 0) {``
-      return next(new ErrorResponse("Cart is empty or not found", 400, []));  
+      return next(new ErrorResponse("Error", 400, ["Cart is empty or not found"]));  
     }
    
-    const userAddress = await Address.findOne({ id: address, user: userId });
+    const userAddress = await Address.findOne({ _id: address, user: userId });
+    console.log(userAddress)
     if (!userAddress) {
-    return next(new ErrorResponse("Invalid address provided.", 400, []));
+    return next(new ErrorResponse("Error", 400, ["Invalid address provided."]));
     }
 
-    const shipmentMethod = await Shipment.findById(shipment);
-    if (!shipmentMethod) {
-    return next(new ErrorResponse("Invalid shipment method.", 400, []));
-    }
+    const carrierMethod = (value: string): boolean => 
+      Object.values(Carriers).includes(value as Carriers);
+    
+    if (!carrierMethod(carrier)) {
+      return next(
+        new ErrorResponse(
+          `Invalid carrier. Valid options are: ${Object.values(Carriers).join(", ")}`,
+          400,[]))
+        }
 
     const order = new Order({
       user: userId,
       address,
-      orderItems,
+      cartItems,
       totalAmount,
-      shipment,
+      carrier,
     });
     await order.save()
     
@@ -135,7 +142,7 @@ export const cancelOrder = asyncHandler(
     order.status = "cancelled";
     
     
-    order.orderItems.forEach( async (item) => {
+    order.cartItems.forEach( async (item) => {
       const product = await Product.findById(item.productId);
       if (product) {
         product.stockQuantity += item.quantity;

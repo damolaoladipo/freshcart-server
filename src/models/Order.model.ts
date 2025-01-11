@@ -7,7 +7,7 @@ const OrderSchema = new mongoose.Schema<IOrderDoc>(
   {
     user: { type: Schema.Types.ObjectId, ref: DbModels.USER, required: true },
     address: [{ type: String,  ref: DbModels.ADDRESS, required: true }],
-    orderItems: [{ type: Schema.Types.ObjectId, ref: DbModels.ORDERITEM, required: true }],
+    cartItems: [{ type: Schema.Types.ObjectId, ref: DbModels.PRODUCT, required: true }],
     payment: [{ type: Schema.Types.ObjectId, ref: DbModels.TRANSACTION, required: true }],
     shipment: [{ type: Schema.Types.ObjectId, ref: DbModels.SHIPMENT, required: true }],
     orderDate: { type: Date, default: Date.now },

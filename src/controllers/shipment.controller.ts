@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import Shipment from "../models/Shipment.model";
-import { UserType } from "../utils/enum.util";
+import { Carriers, UserType } from "../utils/enum.util";
 import { generateRandomChars } from "../utils/helper.util";
 import User from "../models/User.model";
 
@@ -53,6 +53,16 @@ export const createShipment = asyncHandler(
     if (!address || typeof address !== "string") {
       return next(new ErrorResponse("A valid address is required.", 400, []));
     }   
+
+    const isValidCarrier = (value: string): boolean => 
+      Object.values(Carriers).includes(value as Carriers);
+    
+    if (!isValidCarrier(carrier)) {
+      return next(
+        new ErrorResponse(
+          `Invalid carrier. Valid options are: ${Object.values(Carriers).join(", ")}`,
+          400,[]))
+        }
 
     const trackingNumber = generateRandomChars(20)
     const shipmentDate = new Date();

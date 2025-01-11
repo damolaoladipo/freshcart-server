@@ -20,6 +20,6 @@ cartRouter.put("/userId/update", checkAuth, updateProductQuantity)
 cartRouter.put("/:userId/remove", checkAuth, removeFromCart);
 cartRouter.put("/:userId/coupon", checkAuth, applyCoupon);
 cartRouter.put("/:userId/checkout", checkAuth, checkout);
-cartRouter.delete("/userId/clear", checkAuth, clearCart)
+cartRouter.put("/userId/clear", checkAuth, clearCart)
 
 export default cartRouter;
