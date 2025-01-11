@@ -38,6 +38,59 @@ export const getShipment = asyncHandler(
  */
 export const createShipment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+ 
+    const { userId, orderId, address, carrier } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorResponse("User not found.", 404, []));
+    }
+
+    if (!address || typeof address !== "string") {
+      return next(new ErrorResponse("A valid address is required.", 400, []));
+    }   
+
+    const isValidCarrier = (value: string): boolean => 
+      Object.values(Carriers).includes(value as Carriers);
+    
+    if (!isValidCarrier(carrier)) {
+      return next(
+        new ErrorResponse(
+          `Invalid carrier. Valid options are: ${Object.values(Carriers).join(", ")}`,
+          400,[]))
+        }
+
+    const trackingNumber = generateRandomChars(20)
+    const shipmentDate = new Date();
+    shipmentDate.setDate(shipmentDate.getDate() + 3);
+
+    const shipment = new Shipment({
+      user: userId,
+      order: orderId,
+      carrier,
+      address,
+      trackingNumber,
+      shipmentDate,
+    });
+
+    await shipment.save();
+
+    res.status(201).json({
+      error: false,
+      message: "Shipment created successfully.",
+      data: shipment,
+    });
+  }
+);
+
+
+/**
+ * @name createShipment
+ * @description Creates a new shipment for an order
+ * @route POST /shipment
+ * @access  Private
+ */
+export const createShipmentbyAdmin = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     
     const { role} = req.user; 
     if (![UserType.ADMIN, UserType.SUPER].includes(role)) {
@@ -86,6 +139,7 @@ export const createShipment = asyncHandler(
     });
   }
 );
+
 
 /**
  * @name updateShipmentStatus

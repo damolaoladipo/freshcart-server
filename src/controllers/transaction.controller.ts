@@ -5,7 +5,7 @@ import Transaction from "../models/Transaction.model";
 import { PaymentGatewayFactory } from "../services/payment/paymentfactory.service";
 import Order from "../models/Order.model";
 import { IUserDoc } from "../utils/interface.util";
-import { PaymentStatus } from "../utils/enum.util";
+import { PaymentPartners, PaymentStatus } from "../utils/enum.util";
 
 
 
@@ -15,25 +15,94 @@ import { PaymentStatus } from "../utils/enum.util";
  * @route POST /transaction
  * @access  Private
  */
+// export const createTransaction = asyncHandler(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const { orderId, amount, currency, paymentProvider, callback_url } = req.body;
+
+//     const order = await Order.findById(orderId).populate<{ user: IUserDoc }>('user')
+//     if (!order || !order.user) {
+//       return next(new ErrorResponse("Order or user not found", 404, []));
+//     }
+
+//     const reference = `txn_${Date.now()}`;
+//     const paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
+
+//     const paymentInit = await paymentGateway.initializePayment({
+//       email: order.user.email, 
+//       amount: amount * 100,
+//       currency,
+//       reference,
+//       callback_url,
+//     });
+
+//     const transaction = new Transaction({
+//       order: orderId,
+//       amount,
+//       method: paymentProvider,
+//       currency,
+//       paymentReference: reference,
+//       paymentPartner: paymentProvider,
+//       status: PaymentStatus.PENDING,
+//       paymentUrl: paymentInit.data.authorization_url,
+//     });;
+
+//     await transaction.processTransaction();
+
+//     res.status(201).json({
+//       error: false,
+//       message: "Transaction processed successfully.",
+//       data: transaction,
+//     });
+//   }
+// );
+
+
 export const createTransaction = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { orderId, amount, currency, paymentProvider, callback_url } = req.body;
 
-    const order = await Order.findById(orderId).populate<{ user: IUserDoc }>('user')
+    if (!Object.values(PaymentPartners).includes(paymentProvider)) {
+      console.error(`Unsupported payment provider: ${paymentProvider}`);
+      return next(
+        new ErrorResponse(`Invalid payment provider: ${paymentProvider}`, 400, [])
+      );
+    }
+
+    if (!orderId || !amount || !currency || !paymentProvider || !callback_url) {
+      return next(new ErrorResponse("Invalid request data", 400, []));
+    }
+
+    const order = await Order.findById(orderId).populate<{ user: IUserDoc }>('user');
     if (!order || !order.user) {
       return next(new ErrorResponse("Order or user not found", 404, []));
     }
 
     const reference = `txn_${Date.now()}`;
-    const paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
+    let paymentGateway;
 
-    const paymentInit = await paymentGateway.initializePayment({
-      email: order.user.email, 
-      amount: amount * 100,
-      currency,
-      reference,
-      callback_url,
-    });
+    try {
+      paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
+    } catch (error) {
+      console.error("Payment provider error:", error.message);
+      return next(new ErrorResponse("Invalid payment provider payatac", 400, []));
+    }
+
+    let paymentInit;
+    try {
+      paymentInit = await paymentGateway.initializePayment({
+        email: order.user.email,
+        amount: amount * 100,
+        currency,
+        reference,
+        callback_url,
+      });
+      
+      
+
+    } catch (error) {
+      console.error("Payment initialization error:", error.message);
+      return next(new ErrorResponse("Failed to initialize payment", 500, []));
+    }
 
     const transaction = new Transaction({
       order: orderId,
@@ -44,9 +113,14 @@ export const createTransaction = asyncHandler(
       paymentPartner: paymentProvider,
       status: PaymentStatus.PENDING,
       paymentUrl: paymentInit.data.authorization_url,
-    });;
+    });
 
-    await transaction.processTransaction();
+    try {
+      await transaction.processTransaction();
+    } catch (error) {
+      console.error("Transaction processing error:", error.message);
+      return next(new ErrorResponse("Failed to process transaction", 500, []));
+    }
 
     res.status(201).json({
       error: false,
