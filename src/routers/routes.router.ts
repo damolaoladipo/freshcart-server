@@ -11,6 +11,7 @@ import transactionRouter from "./routes/transaction.router";
 import wishListRouter from "./routes/wishlist.router";
 import orderItemRouter from "./routes/orderitem.router";
 import AddressRouter from "./routes/address.router";
+import enumsRouter from "./routes/enums.router";
 
 
 
@@ -28,6 +29,7 @@ v1Routes.use("/product", productRouter);
 v1Routes.use("/shipment", shipmentRouter);
 v1Routes.use("/transaction", transactionRouter);
 v1Routes.use("/wishlist", wishListRouter);
+v1Routes.use("/enums", enumsRouter)
 
 
 export default v1Routes
