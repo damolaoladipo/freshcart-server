@@ -87,23 +87,20 @@ export const createTransaction = asyncHandler(
       return next(new ErrorResponse("Invalid payment provider payatac", 400, []));
     }
 
-    let paymentInit;
-    try {
-      paymentInit = await paymentGateway.initializePayment({
+  
+    const paymentInit = await paymentGateway.initializePayment({
         email: order.user.email,
         amount: amount * 100,
         currency,
         reference,
         callback_url,
       });
+      if (paymentInit.error){
+        return next (
+          new ErrorResponse("Error", paymentInit.code!, [paymentInit.message])
+        )
+      }
       
-      
-
-    } catch (error) {
-      console.error("Payment initialization error:", error.message);
-      return next(new ErrorResponse("Failed to initialize payment", 500, []));
-    }
-
     const transaction = new Transaction({
       order: orderId,
       amount,

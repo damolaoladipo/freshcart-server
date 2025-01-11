@@ -325,7 +325,7 @@ export interface IPaymentGateway {
     currency: string
     reference: string;
     callback_url: string;
-  }): Promise<any>;
+  }): Promise<IResult>;
 
-  verifyPayment(reference: string): Promise<any>;
+  verifyPayment(reference: string): Promise<IResult>;
 }

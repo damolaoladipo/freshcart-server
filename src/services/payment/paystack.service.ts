@@ -1,6 +1,5 @@
 import axios from "axios";
-import ErrorResponse from "../../utils/error.util";
-import { IPaymentGateway } from "../../utils/interface.util";
+import { IPaymentGateway, IResult } from "../../utils/interface.util";
 
 
 import { config } from "dotenv";
@@ -10,76 +9,91 @@ config()
 
 
 export class PaystackService implements IPaymentGateway{
-  private readonly PAYSTACK_API_BASE = "https://api.paystack.co";
+  private readonly PAYSTACK_API_BASE = process.env.PAYSTACK_API_KEY as string
   private readonly secretKey: string;
   
 
   constructor(secretKey: string) {
     this.secretKey = secretKey;
-    console.log("Paystack secret key:", this.secretKey);
   }
 
-  
 
   /**
    * @name initializePayment
    * @param paymentData - Payment details to initialize the payment
    * @returns { Promise<any> }
    */
-  // async initializePayment(paymentData: {
-  //   email: string;
-  //   amount: number;
-  //   reference: string;
-  //   callback_url: string;
-  // }): Promise<any> {
-  //     const response = await axios.post(
-  //       `${this.PAYSTACK_API_BASE}/transaction/initialize`,
-  //       paymentData,
-  //       { headers: { Authorization: `Bearer ${this.secretKey}` } }
-  //     );
-
-  //     return response.data;
-  // }
-
-  // async verifyPayment(reference: string): Promise<any> {
-  //   const response = await axios.get(
-  //     `${this.PAYSTACK_API_BASE}/transaction/verify/${reference}`,
-  //     { headers: { Authorization: `Bearer ${this.secretKey}` } }
-  //   );
-  //   return response.data;
-  // }
-
-  async initializePayment(paymentData: {
+public  async initializePayment(paymentData: {
     email: string;
     amount: number;
     reference: string;
     callback_url: string;
-  }): Promise<any> {
+  }): Promise<IResult> {
+    if (!paymentData.email || !paymentData.amount || !paymentData.reference || !paymentData.callback_url) {
+      return {
+        error: true,
+        message: "Invalid payment data provided.",
+        code: 400,
+        data: {},
+      };
+    }
+
+    const url = `${this.PAYSTACK_API_BASE}/transaction/initialize`;
+
     try {
-      const response = await axios.post(
-        `${this.PAYSTACK_API_BASE}/transaction/initialize`,
+    const response = await axios.post( url,
         paymentData,
         { headers: { Authorization: `Bearer ${this.secretKey}` } }
       );
-      return response.data;
+      return {
+        error: false,
+        message: "Payment verified successfully.",
+        code: 200,
+        data: response.data,
+      };
     } catch (error: any) {
-      console.error("Paystack payment initialization error:", error.response?.data || error.message);
-      throw new ErrorResponse("Failed to initialize payment", 500, []);
-    }
+      return {
+        error: true,
+        message: error.response?.data?.message || "Failed to verify payment.",
+        code: error.response?.status || 500,
+        data: error.response?.data || {},
+      };
   }
-  
-  async verifyPayment(reference: string): Promise<any> {
-    try {
-      const response = await axios.get(
-        `${this.PAYSTACK_API_BASE}/transaction/verify/${reference}`,
-        { headers: { Authorization: `Bearer ${this.secretKey}` } }
-      );
-      return response.data;
-    } catch (error: any) {
-      console.error("Paystack payment verification error:", error.response?.data || error.message);
-      throw new ErrorResponse("Failed to verify payment", 500, []);
-    }
+} 
+
+
+/**
+* @name verifyPayment
+* @param reference - Reference ID for the payment to verify
+* @returns {Promise<IResult>}
+*/
+public async verifyPayment(reference: string): Promise<IResult> {
+  if (!reference) {
+    return {
+      error: true,
+      message: "Reference is required to verify payment.",
+      code: 400,
+      data: {},
+    };
   }
-  
-  
+
+  const url = `${this.PAYSTACK_API_BASE}/transaction/verify/${reference}`;
+
+  const response = await axios.get(url,
+      { headers: { Authorization: `Bearer ${this.secretKey}` } }
+    );
+    return {
+      error: true,
+      message: "Payment verified successfully..",
+      code: 200,
+      data: response.data,
+    };
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.response?.data?.message || "Failed to verify payment.",
+      code: error.response?.status || 500,
+      data: error.response?.data || {},
+    };
+  } 
 }
