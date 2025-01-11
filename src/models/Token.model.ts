@@ -26,7 +26,7 @@ const TokenSchema = new mongoose.Schema<IToken>({
 );
 
 const Token: Model<IToken> = model<IToken>(
-    DbModels.SESSIONTOKEN,
+    DbModels.TOKEN,
     TokenSchema
 );
 

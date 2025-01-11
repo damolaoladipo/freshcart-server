@@ -76,8 +76,11 @@ class TokenService {
 
     const token = this.generateToken(payload, process.env.TOKEN_SECRET as string);
 
-    const sessionToken = new Token({ userId, token });
-    await sessionToken.save();
+    const userToken = new Token({ 
+      user: user._id, 
+      token,
+      expiresAt: new Date(Date.now() + 3600 * 1000) });
+    await userToken.save();
 
     result.data = { token };
     result.message = "Token created successfully";

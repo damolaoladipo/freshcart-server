@@ -11,10 +11,10 @@ import expressSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import hpp from "hpp";
 import cors from "cors";
-import { manageSession } from "../middlewares/session.mdw";
-import session from "express-session";
 // import userAgent from "express-useragent";
 import v1Routes from "../routers/routes.router";
+import logger from "../utils/logger.util";
+import { requestLogger } from "../services/logger.service";
 
 
 
@@ -23,6 +23,8 @@ dotenv.config();
 
 
 const app = express();
+
+app.use(requestLogger)
 
 // body parser
 app.use(express.json({limit: '50mb'}))

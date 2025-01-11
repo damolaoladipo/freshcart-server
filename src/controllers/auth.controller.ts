@@ -96,17 +96,17 @@ export const login = asyncHandler(
 
     if (authToken) {
       authToken.token = validate.data.token;
+      console.log(authToken)
       await authToken.save();
     } else {
-      
-
       if (!validate.data.token) {
         return next(new ErrorResponse("Token generation failed", 500, []));
       }
 
       await Token.create({
         token: validate.data.token,
-        userId: validate.data.id,
+        user: validate.data.id,
+        expiresAt: new Date(Date.now() + 3600 * 1000),
       });
     }
 
@@ -128,62 +128,6 @@ export const login = asyncHandler(
 );
 
 /**
- * Generate session for the user (without user ID on initial visit)
- * @param req - The request object
- * @param res - The response object
- * @param next - The next middleware function
- */
-// export const generateSessionToken = asyncHandler(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const result = await SessionService.generateSessionToken(req, res, next);
-//     if (result.error) {
-//       return next(new ErrorResponse("Error", result.code, [result.message]));
-//     }
-
-//     res.status(200).json({
-//       error: false,
-//       errors: [],
-//       data: { sessionToken: result.data.sessionToken },
-//       message: "Session token created successfully",
-//       status: 200,
-//     });
-//   }
-// );
-
-/**
- * Creates a session token for the user, includes the userId in the payload.
- * @param req - The request object
- * @param res - The response object
- * @param next - The next middleware function
- */
-// export const createSessionToken = asyncHandler(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const { sessionToken, userId } = req.body;
-
-//     if (!sessionToken) {
-//       return next(
-//         new ErrorResponse("Session token is required", 400, [
-//           "Session token is required",
-//         ])
-//       );
-//     }
-
-//     const result = await SessionService.createSessionToken(req, res, next);
-//     if (result.error) {
-//       return next(new ErrorResponse("Error", result.code, [result.message]));
-//     }
-
-//     res.status(200).json({
-//       error: false,
-//       errors: [],
-//       data: { sessionToken: result.data.sessionToken },
-//       message: "Session token refreshed successfully",
-//       status: 200,
-//     });
-//   }
-// );
-
-/**
  * @name logout
  * @description Logs out the user by invalidating the session token
  * @route POST /auth/logout
@@ -199,55 +143,7 @@ export const logout = asyncHandler(
     });
   }
 );
-// export const logout = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   const { sessionToken } = req.cookies;
 
-//   if (!sessionToken) {
-//     return next(
-//       new ErrorResponse("Session token is missing", 400, [
-//         "Session token is required",
-//       ])
-//     );
-//   }
-
-//   const session = await SessionToken.findOne({ token: sessionToken });
-//   if (!session) {
-//     return next(
-//       new ErrorResponse("Session token not found", 403, [
-//         "Session token not found or expired",
-//       ])
-//     );
-//   }
-
-//   await session.removeSession();
-
-//   res.clearCookie("sessionToken", {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//     sameSite: "strict",
-//   });
-
-//   req.session.destroy((err) => {
-//     if (err) {
-//       return next(
-//         new ErrorResponse("Failed to destroy session", 500, [
-//           "Server error occurred while logging out",
-//         ])
-//       );
-//     }
-
-//     return res.status(200).json({
-//       error: false,
-//       errors: [],
-//       message: "User logged out successfully.",
-//       status: 200,
-//     });
-//   });
-// };
 
 /**
  * @name forgotPassword

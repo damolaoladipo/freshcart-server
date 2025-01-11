@@ -30,7 +30,7 @@ class AuthService {
     const result: IResult = { error: false, message: "", code: 200, data: {} };
     const { email, password } = data;
 
-    const user = await User.findOne({ email })?.populate([
+    const user = await User.findOne({ email }).populate([
       { path: "role", select: "name permissions" },
      ]);
 
@@ -43,7 +43,6 @@ class AuthService {
 
     const isPasswordCorrect = await user.matchPassword(password);
     if (!isPasswordCorrect) {
-      console.log("Incorrect password", email)
       return this.handleInvalidCredentials(result);
     }
     const authToken = await user.getAuthToken();
@@ -52,7 +51,6 @@ class AuthService {
     result.data = { ...mappedData, token: authToken };
     return result;
   }
-
 
   /**
    * @name validateEmailAndPassword

@@ -39,7 +39,7 @@ export enum DbModels {
     ROLE = "Role",
     MERCHANT = "Merchant",
     GUEST = "Guest",
-    SESSIONTOKEN = "SessionToken",
+    TOKEN = "Token",
     ADDRESS = "Address",
     PRODUCT = "Product",
     CATEGORY = "Category",
