@@ -6,6 +6,7 @@ import { PaymentGatewayFactory } from "../services/payment/paymentfactory.servic
 import Order from "../models/Order.model";
 import { IUserDoc } from "../utils/interface.util";
 import { PaymentPartners, PaymentStatus } from "../utils/enum.util";
+import { PaystackService } from "../services/payment/paystack.service";
 
 
 
@@ -80,21 +81,20 @@ export const createTransaction = asyncHandler(
     const reference = `txn_${Date.now()}`;
     let paymentGateway;
 
-    try {
-      paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
-    } catch (error) {
-      console.error("Payment provider error:", error.message);
-      return next(new ErrorResponse("Invalid payment provider payatac", 400, []));
+    
+    paymentGateway = PaymentGatewayFactory.createGateway(paymentProvider);
+      if (paymentGateway.error){
+        new ErrorResponse("Error", paymentGateway.code!, [paymentGateway.message])
     }
 
   
-    const paymentInit = await paymentGateway.initializePayment({
+    const paymentInit = await PaystackService.initializePayment({
         email: order.user.email,
         amount: amount * 100,
         currency,
         reference,
         callback_url,
-      });
+      })
       if (paymentInit.error){
         return next (
           new ErrorResponse("Error", paymentInit.code!, [paymentInit.message])
@@ -112,12 +112,8 @@ export const createTransaction = asyncHandler(
       paymentUrl: paymentInit.data.authorization_url,
     });
 
-    try {
-      await transaction.processTransaction();
-    } catch (error) {
-      console.error("Transaction processing error:", error.message);
-      return next(new ErrorResponse("Failed to process transaction", 500, []));
-    }
+    
+    await transaction.processTransaction();
 
     res.status(201).json({
       error: false,
@@ -170,11 +166,13 @@ export const updateTransactionStatus = asyncHandler(
 
     const paymentGateway = PaymentGatewayFactory.createGateway(provider);
     const verification = await paymentGateway.verifyPayment(transaction.id);
+
     if (!verification.success) {
       transaction.status = "failed";
       await transaction.save();
-      return next(new ErrorResponse("Payment verification failed", 400, []));
+      return next(new ErrorResponse("Error", verification.code, [verification.message]));
     }
+
 
 
     await transaction.updatePaymentStatus(status);

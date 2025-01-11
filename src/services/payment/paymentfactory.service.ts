@@ -4,6 +4,7 @@ import { PaystackService } from "./paystack.service";
 
 export class PaymentGatewayFactory {
   public static createGateway(provider: string): IResult {
+    
     if (!provider) {
       return {
         error: true,

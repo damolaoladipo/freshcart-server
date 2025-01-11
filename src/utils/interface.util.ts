@@ -76,6 +76,7 @@ export interface IAddress {
 
 
   export interface IResult {
+    [x: string]: any;
     error: boolean;
     message: string;
     code: number;
