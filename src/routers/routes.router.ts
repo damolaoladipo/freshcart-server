@@ -10,6 +10,7 @@ import shipmentRouter from "./routes/shipment.router";
 import transactionRouter from "./routes/transaction.router";
 import wishListRouter from "./routes/wishlist.router";
 import orderItemRouter from "./routes/orderitem.router";
+import AddressRouter from "./routes/address.router";
 
 
 
@@ -17,6 +18,7 @@ const v1Routes = Router();
 
 v1Routes.use("/auth", authRouter);
 v1Routes.use("/user", userRouter);
+v1Routes.use("/address", AddressRouter)
 v1Routes.use("/cart", cartRouter);
 v1Routes.use("/notification", notificationRouter);
 v1Routes.use("/order", orderRouter);

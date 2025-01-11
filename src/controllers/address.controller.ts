@@ -4,10 +4,10 @@ import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 
 
-// Create a new address
 export const createAddress = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { street, city, state, postalCode, country } = req.body;
-  const user = req.user.id
+
+  const { user } = req.user.userId
 
   const address = new Address({ user, street, city, state, postalCode, country });
   await address.save();
