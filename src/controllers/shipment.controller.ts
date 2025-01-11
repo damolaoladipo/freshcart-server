@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import ErrorResponse from "../utils/error.util";
 import Shipment from "../models/Shipment.model";
+import { UserType } from "../utils/enum.util";
+import { generateRandomChars } from "../utils/helper.util";
+import User from "../models/User.model";
 
 /**
  * @name getShipment
@@ -35,12 +38,30 @@ export const getShipment = asyncHandler(
  */
 export const createShipment = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { orderId, address, trackingNumber, shipmentDate } = req.body;
-    const userId = req.user.id;
+    
+    const { role} = req.user; 
+    if (![UserType.ADMIN, UserType.SUPER].includes(role)) {
+      return next(new ErrorResponse("Access denied. Admins only.", 403, []));
+    }
+
+    const { userId, orderId, address, carrier } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorResponse("User not found.", 404, []));
+    }
+
+    if (!address || typeof address !== "string") {
+      return next(new ErrorResponse("A valid address is required.", 400, []));
+    }   
+
+    const trackingNumber = generateRandomChars(20)
+    const shipmentDate = new Date();
+    shipmentDate.setDate(shipmentDate.getDate() + 3);
 
     const shipment = new Shipment({
       user: userId,
       order: orderId,
+      carrier,
       address,
       trackingNumber,
       shipmentDate,
@@ -60,10 +81,15 @@ export const createShipment = asyncHandler(
  * @name updateShipmentStatus
  * @description Updates the status of a shipment
  * @route PUT /shipment/:shipmentId/status
- * @access  Private
+ * @access  Private (Admin & Super Admin)
  */
 export const updateShipmentStatus = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    const { role } = req.user;
+    if (![UserType.ADMIN, UserType.SUPER].includes(role)) {
+      return next(new ErrorResponse("Access denied. Admins only.", 403, []));
+    }
+
     const { shipmentId } = req.params;
     const { status } = req.body;
 
