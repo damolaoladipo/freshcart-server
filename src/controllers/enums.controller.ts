@@ -1,6 +1,21 @@
 import { Request, Response } from "express";
 
-import { AppChannel, Carriers, Currency, DbModels, ENVType, Merchants, NotificationStatus, OrderStatus, PaymentPartners, PaymentStatus, Permissions, ShippingStatus, TokenExpiry, UserType } from "../utils/enum.util";
+import { 
+  AppChannel, 
+  Carriers,
+  Currency, 
+  DbModels, 
+  ENVType, 
+  Merchants, 
+  NotificationStatus, 
+  OrderStatus, 
+  PaymentPartners, 
+  PaymentStatus, 
+  Permissions, 
+  ShippingStatus, 
+  TokenExpiry, 
+  UserType 
+} from "../utils/enum.util";
 
 /**
  * @name getEnums

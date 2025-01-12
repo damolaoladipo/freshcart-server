@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Logger from "../utils/logger.util"; // Path to your logger
+import Logger from "../utils/logger.util"; 
 import colors from "colors";
 import { generateRandomChars } from "../utils/helper.util";
 

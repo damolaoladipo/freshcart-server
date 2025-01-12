@@ -1,6 +1,5 @@
 import formData from "form-data";
 import Mailgun from "mailgun.js";
-import ErrorResponse from "../utils/error.util";
 import { IResult } from "../utils/interface.util";
 
 class EmailService {

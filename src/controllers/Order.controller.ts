@@ -4,9 +4,7 @@ import ErrorResponse from "../utils/error.util";
 import Order from "../models/Order.model";
 import Product from "../models/Product.model";
 import Cart from "../models/Cart.model";
-import Shipment from "../models/Shipment.model";
 import Address from "../models/Address.model";
-import OrderItem from "../models/OrderItem.model";
 import { Carriers } from "../utils/enum.util";
 
 

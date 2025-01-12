@@ -4,7 +4,7 @@ import {
   getOrderItemsByOrder,
   updateOrderItem,
   deleteOrderItem,
-} from "../../controllers/OrderItem.controller";
+} from "../../controllers/orderitem.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const orderItemRouter = Router();

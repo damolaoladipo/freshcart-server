@@ -8,7 +8,7 @@ import {
   checkout, 
   updateProductQuantity,
   clearCart
-} from "../../controllers/cart.Controller";
+} from "../../controllers/cart.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const cartRouter = Router();

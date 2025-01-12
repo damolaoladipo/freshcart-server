@@ -4,7 +4,7 @@ import {
   getPaymentPartner, 
   updatePaymentPartner, 
   getAllPaymentPartners 
-} from "../../controllers/paymentPartner.controller";
+} from "../../controllers/paymentpartner.controller";
 import checkAuth from "../../middlewares/checkAuth.mdw";
 
 const paymentPartnerRouter = Router();

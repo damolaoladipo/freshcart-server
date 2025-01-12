@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types, Model } from "mongoose";
 import { INotificationDoc } from "../utils/interface.util";
-import { DbModels, NotificationStatus, UserType } from "../utils/enum.util";
+import { DbModels, NotificationStatus } from "../utils/enum.util";
 
 const NotificationSchema = new mongoose.Schema<INotificationDoc>(
   {

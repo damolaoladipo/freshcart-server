@@ -2,8 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import asyncHandler from "../middlewares/async.mdw";
 import Cart from "../models/Cart.model";
 import ErrorResponse from "../utils/error.util";
-import Product from "../models/Product.model";
-import { ICartDoc, IProductDoc } from "../utils/interface.util";
+import { IProductDoc } from "../utils/interface.util";
 
 /**
  * @name createCart

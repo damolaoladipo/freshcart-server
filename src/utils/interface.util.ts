@@ -1,4 +1,4 @@
-import { Document, Model, ObjectId } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 export type Nullable<T> = T | null;
 export interface IRoleDoc extends Document {

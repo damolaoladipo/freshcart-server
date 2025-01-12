@@ -11,9 +11,7 @@ import expressSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import hpp from "hpp";
 import cors from "cors";
-// import userAgent from "express-useragent";
 import v1Routes from "../routers/routes.router";
-import logger from "../utils/logger.util";
 import { requestLogger } from "../services/logger.service";
 
 
