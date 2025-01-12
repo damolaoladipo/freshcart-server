@@ -34,16 +34,6 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: false}))
 // cookie parser
 app.use(cookieParser())
 
-// manage sessions
-// app.use(manageSession);
-
-// app.use(session({
-//     secret: process.env.SESSION_SECRET || "", 
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: false } 
-//   }));
-
 // temporaary files directory
 app.use(fileUpload({useTempFiles: true, tempFileDir: path.join(__dirname, 'tmp')}))
 
@@ -103,8 +93,6 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
         status: 200
 
     })
-
-
 })
 
 app.use('/v1', v1Routes)
