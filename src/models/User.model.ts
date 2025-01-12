@@ -1,0 +1,147 @@
+import mongoose, { Schema, Model } from "mongoose";
+import { IUserDoc } from "../utils/interface.util";
+import slugify from "slugify";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { DbModels, UserType } from "../utils/enum.util";
+import { config } from "dotenv";
+
+
+config()
+
+const UserSchema = new Schema(
+  {
+    firstName: { type: String, default: "" },
+    lastName: { type: String, default: "" },
+    email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
+    password: { type: String, required: true, default: "", select: true },
+
+    username: { type: String, default: "", unique: true },
+    avatar: { type: String, default: "" },
+    phoneNumber: { type: String, default: "" },
+    phoneCode: { type: String, default: "+234" },
+    countryPhone: { type: String, default: "" },
+    userType: { type: String, default: "" },
+    accountStatus: { type: String, default: "" },
+    emailCode: { type: String, default: "" },
+
+
+    isSuper: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false },
+    isMerchant: { type: Boolean, default: false },
+    isUser: { type: Boolean, default: UserType.USER, required: true },
+    isActive: { type: Boolean, default: true },
+
+    role: { type: Schema.Types.ObjectId, ref: DbModels.ROLE },
+
+  },
+  {
+    timestamps: true,
+    versionKey: "_version",
+    toJSON: {
+      transform(doc: any, ret) {
+        ret.id = ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+UserSchema.set("toJSON", { virtuals: true, getters: true });
+UserSchema.pre<IUserDoc>("save", async function (next) {
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  }
+  
+  this.slug = slugify(this.email, { lower: true, replacement: "-" });
+
+  next();
+});
+
+UserSchema.methods.matchPassword = async function (password: string) {
+  let result: boolean = false;
+  if (this.password && this.password !== "") {
+    result = await bcrypt.compare(password, this.password);
+  }
+  return result;
+};
+
+UserSchema.methods.getAuthToken = async function () {
+
+  const secret = process.env.JWT_SECRET as string
+  const expire = process.env.JWT_EXPIRY as string
+
+  
+  let token: string = "";
+
+  if (!secret ) {
+    throw new Error("JWT_SECRET is not defined.");
+  }
+  if (!expire) {
+    throw new Error("JWT_EXPIRY is not defined.");
+  }
+   token = await jwt.sign(
+    {
+      id: this._id,
+      email: this.email,
+      isSuper: this.isSuper,
+      isAdmin: this.isAdmin,
+      isMerchant: this.isMerchant,
+      isGuest: this.IsGuest,
+      isUser: this.isUser,
+      role: this.role,
+    },
+    secret,
+    {
+      algorithm: "HS512",
+      expiresIn: process.env.JWT_EXPIRY,
+    }
+  );
+
+  return token;
+};
+
+
+//   let token: string = "";
+
+//   if (!process.env.JWT_SECRET ) {
+    
+//     throw new Error("JWT_SECRET is not defined.");
+//   }
+//   if (!process.env.JWT_EXPIRY) {
+//     throw new Error("JWT_EXPIRY is not defined.");
+//   }
+//    token = await jwt.sign(
+//     {
+//       id: this._id,
+//       email: this.email,
+//       isSuper: this.isSuper,
+//       isAdmin: this.isAdmin,
+//       isMerchant: this.isMerchant,
+//       isGuest: this.IsGuest,
+//       isUser: this.isUser,
+//       role: this.role,
+//     },
+//     process.env.JWT_SECRET,
+//     {
+//       algorithm: "HS512",
+//       expiresIn: process.env.JWT_EXPIRY,
+//     }
+//   );
+
+//   return token;
+// };
+
+UserSchema.statics.getUsers = async () => {
+  return await User.find({});
+};
+
+UserSchema.methods.findById = async (id: any) => {
+  const user = await User.findOne({ _id: id });
+  return User ? User : null;
+};
+
+const User: Model<IUserDoc> = mongoose.model<IUserDoc>(DbModels.USER, UserSchema);
+
+export default User;

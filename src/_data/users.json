@@ -1,0 +1,19 @@
+[
+    {
+      "username": "superadmin",
+      "email": "thedamolaoladipo@gmail.com",
+      "password": "p6vzH^51$B@;",
+      "firstName": "Super",
+      "lastName": "Administrator",
+      "phoneCode": "+234",
+      "phoneNumber": "09061590172",
+      "ountryPhone": "+2349061590172",
+      "role": "superadmin",
+      "accountStatus": "active",
+      "isSuper": true,
+      "isAdmin": true,
+      "isUser": true,
+      "isActive": true
+    }
+]
+  
