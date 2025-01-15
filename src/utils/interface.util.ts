@@ -43,7 +43,7 @@ export interface IUserDoc extends Document {
     isAdmin: boolean;	
     isMerchant: boolean;	
     isGuest: boolean;
-    isUser: boolean;	
+    isUser: string;	
     isActive: boolean;
     loginLimit: number;	
     
@@ -141,7 +141,7 @@ export interface ICartDoc extends Document {
   checkout: boolean;
 
   
-  addToCart: (productId: ObjectId, quantity: number) => Promise<ICartDoc>;
+  addToCart: (id: ObjectId, quantity: number) => Promise<ICartDoc>;
   removeFromCart: (productId: ObjectId) => Promise<ICartDoc>;
   applyCoupon: (coupon: string) => Promise<ICartDoc>;
   proceedToCheckout(): Promise<ICartDoc>;

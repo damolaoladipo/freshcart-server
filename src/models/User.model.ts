@@ -29,7 +29,7 @@ const UserSchema = new Schema(
     isSuper: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     isMerchant: { type: Boolean, default: false },
-    isUser: { type: Boolean, default: UserType.USER, required: true },
+    isUser: { type: String, default: UserType.USER, required: true },
     isActive: { type: Boolean, default: true },
 
     role: { type: Schema.Types.ObjectId, ref: DbModels.ROLE },
