@@ -18,8 +18,8 @@ cartRouter.get("/:userId", checkAuth, getCart);
 cartRouter.put("/:userId/add", checkAuth, addToCarts);
 cartRouter.put("/userId/update", checkAuth, updateProductQuantity)
 cartRouter.put("/:userId/remove", checkAuth, removeFromCart);
-cartRouter.put("/:userId/coupon", checkAuth, applyCoupon);
 cartRouter.put("/:userId/checkout", checkAuth, checkout);
 cartRouter.put("/userId/clear", checkAuth, clearCart)
+cartRouter.put("/:userId/coupon", checkAuth, applyCoupon);
 
 export default cartRouter;
