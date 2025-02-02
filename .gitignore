@@ -20,4 +20,8 @@ build
 .eslintcache
 
 # Ignore all .txt files
+.txt
+*/.txt
+/.txt
 *.txt
+*/.txt

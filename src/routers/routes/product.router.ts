@@ -14,9 +14,9 @@ const productRouter = Router();
 
 productRouter.post("/", checkAuth, createProduct);
 productRouter.get("/", getAllProducts);
-productRouter.get("/:id", getProductById);
-productRouter.put("/:id", checkAuth, updateProduct);
-productRouter.delete("/:id", checkAuth, deleteProduct);
+productRouter.get("/:productId", getProductById);
+productRouter.put("/:productId", checkAuth, updateProduct);
+productRouter.delete("/:productId", checkAuth, deleteProduct);
 productRouter.put("/:productId/discount", checkAuth, applyDiscount);
 productRouter.put("/:productId/discount/remove", checkAuth, removeDiscount);
 

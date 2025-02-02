@@ -12,6 +12,6 @@ const transactionRouter = Router();
 transactionRouter.post("/", checkAuth, createTransaction);
 transactionRouter.get("/:id", checkAuth, getTransaction);
 transactionRouter.put("/:id/status", checkAuth, updateTransactionStatus);
-transactionRouter.get("/order/:orderId", checkAuth, getOrderTransactions);
+transactionRouter.get("/:orderId", checkAuth, getOrderTransactions);
 
 export default transactionRouter;

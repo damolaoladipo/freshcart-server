@@ -64,7 +64,8 @@ export enum OrderStatus {
 
 export enum ShippingStatus {
     PENDING = "pending", 
-    IN_TRANSIT = "in_transit", 
+    IN_TRANSIT = "in_transit",
+    SHIPPED = 'SHIPPED', 
     DELIVERED = "delivered",
     CANCELLED = "cancelled", 
     RETURNED = "returned"
