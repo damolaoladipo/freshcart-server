@@ -85,11 +85,11 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
         error: false,
         errors: [],
         data: {
-            name: "Shopery API - DEFAULT",
+            name: "Freshcart API - DEFAULT",
             version: "1.0.0",
 
         },
-        message: 'Shopery api v1.0.0',
+        message: 'Freshcart api v1.0.0',
         status: 200
 
     })

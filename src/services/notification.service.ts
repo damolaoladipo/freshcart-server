@@ -24,7 +24,7 @@ class NotificationService {
       const { orderId, totalAmount, items } = orderDetails;
 
       const emailData = {
-        from: `Shopery <no-reply@${process.env.MAILGUN_DOMAIN}>`,
+        from: `Freshcart <no-reply@${process.env.MAILGUN_DOMAIN}>`,
         to: email,
         subject: `Order Confirmation - #${orderId}`,
         html: `
@@ -63,7 +63,7 @@ class NotificationService {
       const { trackingNumber, carrier, estimatedDelivery } = shipmentDetails;
 
       const emailData = {
-        from: `Shopery <no-reply@${process.env.MAILGUN_DOMAIN}>`,
+        from: `Freshcart <no-reply@${process.env.MAILGUN_DOMAIN}>`,
         to: email,
         subject: `Your Order Has Been Shipped!`,
         html: `
@@ -100,7 +100,7 @@ class NotificationService {
       const { subject, body } = promotionDetails;
 
       const emailData = {
-        from: `Shopery <no-reply@${process.env.MAILGUN_DOMAIN}>`,
+        from: `Freshcart <no-reply@${process.env.MAILGUN_DOMAIN}>`,
         to: emails.join(','),
         subject: subject,
         html: `

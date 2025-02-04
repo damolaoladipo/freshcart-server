@@ -1,7 +1,7 @@
 {
-  "name": "shoppadi-server",
+  "name": "freshcart-server",
   "version": "1.0.0",
-  "description": "shoppadi - where you ddo everything shopping",
+  "description": "Freshcart - where you ddo everything shopping",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

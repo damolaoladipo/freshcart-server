@@ -24,12 +24,12 @@ const connectDB = async () => {
       );
       console.log(
         colors.cyan.bold.underline(
-          `Shoppadi Database Connected: ${dbConn.connection.host} `
+          `Freshcart Database Connected: ${dbConn.connection.host} `
         )
       );
     } catch (error) {
       console.log(
-        colors.cyan.bold.underline(`Could not connect to Shoppadi database: ${error}`)
+        colors.cyan.bold.underline(`Could not connect to Freshcart database: ${error}`)
       );
       process.exit(1);
     }
