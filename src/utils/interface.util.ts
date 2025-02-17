@@ -107,7 +107,7 @@ export interface IProductDoc extends Document {
   category: string;
   tag: string[];
   stockQuantity: number;
-  imageURLs: string[];
+  image: string[];
   
   merchant: string
   inStock: boolean;

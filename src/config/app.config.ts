@@ -50,22 +50,28 @@ app.use(helmet())
 // prevent parameter pollution
 app.use(hpp())
 
-// enable CORS: communicate with multiple domain
-app.use(cors({origin: true, credentials: true}))
+const allowedOrigins = ["http://localhost:3000"]; // Replace with your frontend origin
 
-app.use ((req: Request, res: Response, next: NextFunction) => {
-    res.header("Access-Control-Allow-Origin", "*"),
-    res.header(
-        "Access-Control-Allow-Origin", 
-        "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-    ),
-    res.header(
-        "Access-Control-Allow-Origin",
-    "x-acess-token, origin, X-Requested-With, Content-Type, Accept"
-    )
-    next()
+app.use(
+    cors({
+        origin: allowedOrigins, // Set allowed frontend origin
+        credentials: true, // Allow cookies and auth headers
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["X-Requested-With", "Content-Type", "Authorization"],
+    })
+);
 
-})
+// ✅ Remove manually setting headers (CORS handles this)
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
+    next();
+});
+
+// ✅ Handle preflight requests (important for CORS)
+app.options("*", cors());
+
+
 
 app.set('view engine', 'ejs')
 

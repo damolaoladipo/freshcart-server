@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../middlewares/async.mdw';
 import Product from '../models/Product.model';
 import ErrorResponse from '../utils/error.util';
+import upload from 'config/cloudinary.config';
 
 /**
  * @name createProduct
@@ -11,7 +12,7 @@ import ErrorResponse from '../utils/error.util';
  */
 export const createProduct = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, desc, price, category, tag, stockQuantity, imageURLs, merchant, discount, count } = req.body;
+    const { name, desc, price, category, tag, stockQuantity, image, merchant, discount, count } = req.body;
     
     const newProduct = new Product({
       name,
@@ -20,11 +21,13 @@ export const createProduct = asyncHandler(
       category,
       tag,
       stockQuantity,
-      imageURLs,
+      image,
       merchant,
       discount,
       count,
     });
+
+    await upload(image);
 
     const savedProduct = await newProduct.save();
     res.status(201).json({

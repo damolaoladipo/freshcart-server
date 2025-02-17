@@ -11,7 +11,7 @@ const ProductSchema = new mongoose.Schema<IProductDoc>(
     category: { type: String, required: true },
     tag: { type: [String], default: [], required: true },
     stockQuantity: { type: Number, required: true },
-    imageURLs: { type: [String], required: true },
+    image: { type: [String], required: true },
     merchant: { type: String, enum: Object.values(Merchants), 
       default: Merchants.GREEN_FARM, required: true },
     like: { type: Number, default: 0 },
