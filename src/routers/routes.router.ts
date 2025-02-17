@@ -12,6 +12,7 @@ import wishListRouter from "./routes/wishlist.router";
 import orderItemRouter from "./routes/orderitem.router";
 import AddressRouter from "./routes/address.router";
 import enumsRouter from "./routes/enums.router";
+import fileUploadRouter from "routes/fileupload.router";
 
 
 
@@ -30,6 +31,6 @@ v1Routes.use("/shipment", shipmentRouter);
 v1Routes.use("/transaction", transactionRouter);
 v1Routes.use("/wishlist", wishListRouter);
 v1Routes.use("/enums", enumsRouter)
-
+v1Routes.use("/upload", fileUploadRouter)
 
 export default v1Routes
